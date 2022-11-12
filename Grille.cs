@@ -107,7 +107,7 @@ namespace sudoku
         }
 
         // Construire Grille en utilisant *Case*[9][9]
-        public void GenerateGrid()
+        public void GenerateGridOld()
         {
             List<string> debug = new List<string>();
 
@@ -154,6 +154,123 @@ namespace sudoku
             }
 
             MessageBox.Show("STOP", "Debug ;)", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public string GetPossibleValues(int nb, string alreadyUsed = "")
+        {
+            return GetPossibleValues(nb % 9, nb / 9, alreadyUsed);
+        }
+
+        public string GetPossibleValues(int ox, int oy, string alreadyUsed = "")
+        {
+            string val = "123456789";
+
+            for (int y = 0; y < 9; y++)
+                for (int x = 0; x < 9; x++)
+                {
+                    if (ox == x || oy == y) // Même ligne ou même colonne
+                    {
+                        int index = val.IndexOf(grille[x, y].ToString());
+                        if (index >= 0)
+                            val = val.Remove(index, 1);
+                    }
+                    else if (x / 3 == ox / 3 && y / 3 == oy / 3) // Même carré
+                    {
+                        int index = val.IndexOf(grille[x, y].ToString());
+                        if (index >= 0)
+                            val = val.Remove(index, 1);
+                    }
+                }
+
+            // Départ à i = 2 pck alreadyUsed possède X et Y dedans
+            for(int i = 2; i < alreadyUsed.Length; i++)
+            {
+                int index = val.IndexOf(alreadyUsed[i]);
+                if (index >= 0)
+                    val = val.Remove(index, 1);
+            }
+
+            return val;
+        }
+
+        public void GenerateGrid()
+        {
+            // On stocke chaque étape qu'on va faire sour cette forme :
+            // "X Y R1 R2 R3 . . . R9"
+            // X et Y sont la position de la case utilisée
+            // R1 R2 R3 ... R9 sont les valeurs déjà testées sur cette case, il peut y en avoir entre 0 et 9
+            List<string> pile = new List<string>();
+
+            // Nombre de cases remplies
+            int nbCells = 0;
+
+            // Première case :
+            string cell = GetPossibleValues(nbCells);
+            int index = Random.Shared.Next(cell.Length);
+            grille[nbCells % 9, nbCells / 9] = cell[index] - '0';
+            pile.Add("" + nbCells % 9 + nbCells / 9 + grille[nbCells % 9, nbCells / 9]);
+            nbCells++;
+
+            // Tant qu'il reste des cases à remplir
+            while (nbCells < 81)
+            {
+                // Si on doit remonter jusqu'à la première case (pas sur que ce soit fonctionnel)
+                if (nbCells == 0)
+                {
+                    cell = GetPossibleValues(nbCells, pile.Last<string>());
+                    index = Random.Shared.Next(cell.Length);
+                    grille[nbCells % 9, nbCells / 9] = cell[index] - '0';
+                    pile.Add("" + nbCells % 9 + nbCells / 9 + grille[nbCells % 9, nbCells / 9]);
+                    nbCells++;
+                }
+
+                // Si la dernière action a été faite sur la case actuelle, on utilise la pile
+                if (pile.Last<string>()[0] - '0' == nbCells % 9 && pile.Last<string>()[1] - '0' == nbCells / 9)
+                {
+                    cell = GetPossibleValues(nbCells, pile.Last<string>());
+                    // Pas de possibilité pour la case actuelle : on remonte d'une case en supprimant le dessus de la pile
+                    if (cell.Length == 0)
+                    {
+                        nbCells--;
+                        grille[nbCells % 9, nbCells / 9] = '0';
+                        pile.RemoveAt(pile.Count - 1);
+                    }
+                }
+                // Sinon, on ne l'utilise pas
+                else
+                {
+                    cell = GetPossibleValues(nbCells);
+                    // Pas de possibilité pour la case actuelle : on remonte d'une case
+                    if (cell.Length == 0)
+                    {
+                        nbCells--;
+                        grille[nbCells % 9, nbCells / 9] = '0';
+                    }
+                }
+
+                // On peut donner une valeur à la case
+                if (cell.Length != 0)
+                {
+                    // On récupère une valeur random parmi celles possibles
+                    index = Random.Shared.Next(cell.Length);
+
+                    // On donne cette valeur à la case dans la grille
+                    grille[nbCells % 9, nbCells / 9] = cell[index] - '0';
+
+                    // On enregistre cette action dans la pile
+                    string lastPile = "" + nbCells % 9 + nbCells / 9 + grille[nbCells % 9, nbCells / 9];
+                    // Si la dernière action a été faite sur la case actuelle, on l'enlève
+                    if (pile.Last<string>()[0] - '0' == nbCells % 9 && pile.Last<string>()[1] - '0' == nbCells / 9)
+                    {
+                        lastPile = pile.Last<string>() + grille[nbCells % 9, nbCells / 9];
+                        pile.RemoveAt(pile.Count - 1);
+                    }
+                    pile.Add(lastPile);
+
+                    // On passe à la case suivante
+                    nbCells++;
+                }
+            }
         }
 
         // Retourne la valeur à la position (x, y)
