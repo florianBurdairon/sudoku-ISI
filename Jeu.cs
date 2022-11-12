@@ -23,13 +23,8 @@ namespace sudoku
                 {
                     // Create 81 cells for with styles and locations based on the index
                     cells[i, j] = new SudokuCell();
-                    cells[i, j].Font = new Font(SystemFonts.DefaultFont.FontFamily, 20);
-                    cells[i, j].Size = new Size(40, 40);
-                    cells[i, j].ForeColor = SystemColors.ControlDarkDark;
                     cells[i, j].Location = new Point(i * 40, j * 40);
                     cells[i, j].BackColor = ((i / 3) + (j / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
-                    cells[i, j].FlatStyle = FlatStyle.Flat;
-                    cells[i, j].FlatAppearance.BorderColor = Color.Black;
                     cells[i, j].X = i;
                     cells[i, j].Y = j;
 
@@ -48,7 +43,7 @@ namespace sudoku
                 for (int j = 0; j < 9; j++)
                 {
                     // Use grille to fill cells
-                    cells[i, j].Text = ""+grid.grille[i, j];
+                    cells[i, j].Text = "" + grid.GetPos(i, j);
                 }
             }
         }

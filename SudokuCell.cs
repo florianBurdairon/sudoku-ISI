@@ -18,5 +18,14 @@ namespace sudoku
             this.Text = string.Empty;
             this.IsLocked = false;
         }
+
+        public SudokuCell()
+        {
+            this.Font = new Font(SystemFonts.DefaultFont.FontFamily, 20);
+            this.Size = new Size(40, 40);
+            this.ForeColor = SystemColors.ControlDarkDark;
+            this.FlatStyle = FlatStyle.Flat;
+            this.FlatAppearance.BorderColor = Color.Black;
+        }
     }
 }

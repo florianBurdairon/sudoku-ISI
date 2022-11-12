@@ -104,6 +104,7 @@ namespace sudoku
         {
             grille = new int[9, 9];
             GenerateGrid();
+            //grille = removeCells();
         }
 
         // Construire Grille en utilisant *Case*[9][9]
@@ -156,12 +157,12 @@ namespace sudoku
             MessageBox.Show("STOP", "Debug ;)", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        public string GetPossibleValues(int nb, string alreadyUsed = "")
+        public string GetPossibleValues(int[,] grid, int nb, string alreadyUsed = "")
         {
-            return GetPossibleValues(nb % 9, nb / 9, alreadyUsed);
+            return GetPossibleValues(grid, nb % 9, nb / 9, alreadyUsed);
         }
 
-        public string GetPossibleValues(int ox, int oy, string alreadyUsed = "")
+        public string GetPossibleValues(int[,] grid, int ox, int oy, string alreadyUsed = "")
         {
             string val = "123456789";
 
@@ -170,13 +171,13 @@ namespace sudoku
                 {
                     if (ox == x || oy == y) // Même ligne ou même colonne
                     {
-                        int index = val.IndexOf(grille[x, y].ToString());
+                        int index = val.IndexOf(grid[x, y].ToString());
                         if (index >= 0)
                             val = val.Remove(index, 1);
                     }
                     else if (x / 3 == ox / 3 && y / 3 == oy / 3) // Même carré
                     {
-                        int index = val.IndexOf(grille[x, y].ToString());
+                        int index = val.IndexOf(grid[x, y].ToString());
                         if (index >= 0)
                             val = val.Remove(index, 1);
                     }
@@ -205,7 +206,7 @@ namespace sudoku
             int nbCells = 0;
 
             // Première case :
-            string cell = GetPossibleValues(nbCells);
+            string cell = GetPossibleValues(grille, nbCells);
             int index = Random.Shared.Next(cell.Length);
             grille[nbCells % 9, nbCells / 9] = cell[index] - '0';
             pile.Add("" + nbCells % 9 + nbCells / 9 + grille[nbCells % 9, nbCells / 9]);
@@ -217,7 +218,7 @@ namespace sudoku
                 // Si on doit remonter jusqu'à la première case (pas sur que ce soit fonctionnel)
                 if (nbCells == 0)
                 {
-                    cell = GetPossibleValues(nbCells, pile.Last<string>());
+                    cell = GetPossibleValues(grille, nbCells, pile.Last<string>());
                     index = Random.Shared.Next(cell.Length);
                     grille[nbCells % 9, nbCells / 9] = cell[index] - '0';
                     pile.Add("" + nbCells % 9 + nbCells / 9 + grille[nbCells % 9, nbCells / 9]);
@@ -227,7 +228,7 @@ namespace sudoku
                 // Si la dernière action a été faite sur la case actuelle, on utilise la pile
                 if (pile.Last<string>()[0] - '0' == nbCells % 9 && pile.Last<string>()[1] - '0' == nbCells / 9)
                 {
-                    cell = GetPossibleValues(nbCells, pile.Last<string>());
+                    cell = GetPossibleValues(grille, nbCells, pile.Last<string>());
                     // Pas de possibilité pour la case actuelle : on remonte d'une case en supprimant le dessus de la pile
                     if (cell.Length == 0)
                     {
@@ -239,7 +240,7 @@ namespace sudoku
                 // Sinon, on ne l'utilise pas
                 else
                 {
-                    cell = GetPossibleValues(nbCells);
+                    cell = GetPossibleValues(grille, nbCells);
                     // Pas de possibilité pour la case actuelle : on remonte d'une case
                     if (cell.Length == 0)
                     {
@@ -296,9 +297,38 @@ namespace sudoku
 
         public int[,] removeCells()
         {
-            int[,] grid= grille;
+            // Grille vidée
+            int[,] grid = grille;
 
-            //TODO faire l'algorithme pour enlever les cases -> mettre 0 pour les cases vides
+            // Toutes les cases qui n'ont pas encore été traitées
+            List<int> possibleToRemove = new List<int>();
+            for (int i = 0; i < 81; i++)
+                possibleToRemove.Add(i);
+
+            while (possibleToRemove.Count > 0)
+            {
+                // On prend une case au hasard parmi celles qu'il est possible de traiter
+                int indexNb = Random.Shared.Next(0, possibleToRemove.Count);
+                int nb = possibleToRemove[indexNb];
+
+                // On sauvegarde sa valeur si jamais
+                int saveValue = grid[nb % 9, nb / 9];
+                // On l'enlève du tableau
+                grid[nb % 9, nb / 9] = 0;
+
+                // On récupère le nombre de possibilités de valeur sur la case
+                int nbPoss = GetPossibleValues(grid, nb).Length;
+
+                // Si il y a plus d'une possibilité : On ne peut pas enlever la case
+                if (nbPoss > 1)
+                {
+                    // On remet sa valeur dans la grille
+                    grid[nb % 9, nb / 9] = saveValue;
+                }
+
+                // On supprime cette case des cases non traitées
+                possibleToRemove.RemoveAt(indexNb);
+            }
 
             return grid;
         }
