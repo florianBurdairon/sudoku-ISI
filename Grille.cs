@@ -10,7 +10,7 @@ namespace sudoku
 
     
 
-    internal class Grille
+    public partial class Grille
     {
         internal class Case : IComparable<Case>
         {
@@ -98,7 +98,7 @@ namespace sudoku
         }
 
         // Grille complète
-        private int[,] grille;
+        public int[,] grille { get; }
 
         public Grille()
         {
@@ -175,6 +175,15 @@ namespace sudoku
             }
 
             return ret;
+        }
+
+        public int[,] removeCells()
+        {
+            int[,] grid= grille;
+
+            //TODO faire l'algorithme pour enlever les cases -> mettre 0 pour les cases vides
+
+            return grid;
         }
     }
 }

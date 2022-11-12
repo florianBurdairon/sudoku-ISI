@@ -28,19 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.panel1 = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
-            // Form1
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(195, 60);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(360, 360);
+            this.panel1.TabIndex = 0;
+            // 
+            // Jeu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "Form1";
+            this.Controls.Add(this.panel1);
+            this.Name = "Jeu";
             this.Text = "Form1";
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private Panel panel1;
     }
 }
