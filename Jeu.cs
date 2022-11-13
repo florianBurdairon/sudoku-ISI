@@ -84,9 +84,14 @@ namespace sudoku
                 if (value == 0)
                     cell.Clear();
                 else
+                {
+                    cell.ForeColor = Color.Black;
+                    cell.Font = new Font(cell.Font.Name, cell.Font.Size, FontStyle.Bold);
                     cell.Text = value.ToString();
+                }
+                    
 
-                cell.ForeColor = SystemColors.ControlDarkDark;
+                //cell.ForeColor = SystemColors.ControlDarkDark;
             }
         }
     }
