@@ -89,9 +89,6 @@ namespace sudoku
                     cell.Font = new Font(cell.Font.Name, cell.Font.Size, FontStyle.Bold);
                     cell.Text = value.ToString();
                 }
-                    
-
-                //cell.ForeColor = SystemColors.ControlDarkDark;
             }
         }
     }
