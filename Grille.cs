@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 
 namespace sudoku
 {
-
-    
-
     public partial class Grille
     {
         internal class Case : IComparable<Case>

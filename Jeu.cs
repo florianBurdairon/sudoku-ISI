@@ -15,6 +15,38 @@ namespace sudoku
             removeCell(grid.removeCells());
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            int[] newCoords = null;
+            foreach (SudokuCell cell in cells)
+                if (cell.Focused)
+                    newCoords = new int[] { cell.X, cell.Y };
+            if (newCoords != null)
+            {
+                switch(keyData)
+                {
+                    case Keys.Right:
+                        newCoords[0] = (newCoords[0] + 1) % 9;
+                        break;
+                    case Keys.Left:
+                        newCoords[0] = (newCoords[0] - 1) % 9;
+                        break;
+                    case Keys.Up:
+                        newCoords[1] = (newCoords[1] - 1) % 9;
+                        break;
+                    case Keys.Down:
+                        newCoords[1] = (newCoords[1] + 1) % 9;
+                        break;
+                }
+
+                cells[newCoords[0], newCoords[1]].Focus();
+                return true;
+            }
+
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void createCells()
         {
             for (int i = 0; i < 9; i++)
@@ -29,7 +61,8 @@ namespace sudoku
                     cells[i, j].Y = j;
 
                     // Assign key press event for each cells
-                    cells[i, j].KeyPress += cell_keyPressed;
+                    //cells[i, j].KeyPress += cell_keyPressed;
+                    cells[i, j].KeyDown += cell_keyDown;
 
                     panel1.Controls.Add(cells[i, j]);
                 }
@@ -67,7 +100,7 @@ namespace sudoku
             }
         }
 
-        private void cell_keyPressed(object sender, KeyPressEventArgs e)
+        private void cell_keyDown(object sender, KeyEventArgs e)
         {
             var cell = sender as SudokuCell;
 
@@ -78,8 +111,9 @@ namespace sudoku
             int value;
 
             // Add the pressed key value in the cell only if it is a number
-            if (int.TryParse(e.KeyChar.ToString(), out value))
+            if ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) || (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9))
             {
+                value = e.KeyCode <= Keys.D9 ? (int)(e.KeyCode - Keys.D0) : (int)(e.KeyCode - Keys.NumPad0);
                 // Clear the cell value if pressed key is zero
                 if (value == 0)
                     cell.Clear();
@@ -90,6 +124,19 @@ namespace sudoku
                     cell.Text = value.ToString();
                 }
             }
+
+            //int xmovement = 0;
+            //int ymovement = 0;
+            //if (e.KeyCode == Keys.Left)
+            //{
+            //    xmovement = -1;
+            //}
+            //else if (e.KeyCode == Keys.Up)
+            //{
+            //    ymovement = -1;
+            //}
+
+            //cells[cell.X + xmovement, cell.Y + ymovement].Focus();
         }
     }
 }
