@@ -159,7 +159,7 @@ namespace sudoku
             return GetPossibleValues(grid, nb % 9, nb / 9, alreadyUsed);
         }
 
-        public string GetPossibleValues(int[,] grid, int ox, int oy, string alreadyUsed = "")
+        static public string GetPossibleValues(int[,] grid, int ox, int oy, string alreadyUsed = "")
         {
             string val = "123456789";
 

@@ -17,6 +17,7 @@ namespace sudoku
         {
             this.Text = string.Empty;
             this.IsLocked = false;
+            this.Value = 0;
         }
 
         public SudokuCell()
