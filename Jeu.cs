@@ -20,16 +20,16 @@ namespace sudoku
             switch (keyData)
             {
                 case Keys.Right:
-                    newCoords[0] = (newCoords[0] + 1) % 9;
+                    newCoords[0] = 1;
                     break;
                 case Keys.Left:
-                    newCoords[0] = (newCoords[0] - 1) % 9;
+                    newCoords[0] = -1;
                     break;
                 case Keys.Up:
-                    newCoords[1] = (newCoords[1] - 1) % 9;
+                    newCoords[1] = -1;
                     break;
                 case Keys.Down:
-                    newCoords[1] = (newCoords[1] + 1) % 9;
+                    newCoords[1] = 1;
                     break;
                 default:
                     return base.ProcessCmdKey(ref msg, keyData);
@@ -38,11 +38,14 @@ namespace sudoku
 
             if (newCoords != new int[] { 0, 0 })
             {
+
                 foreach (SudokuCell cell in cells)
                     if (cell.Focused)
                     {
-                        newCoords[0] += cell.X;
-                        newCoords[1] += cell.Y;
+                        newCoords[0] = (newCoords[0] + cell.X) % 9;
+                        newCoords[1] = (newCoords[1] + cell.Y) % 9;
+                        if (newCoords[0] == -1) newCoords[0] = 8;
+                        if (newCoords[1] == -1) newCoords[1] = 8;
                     }
 
                 cells[newCoords[0], newCoords[1]].Focus();
