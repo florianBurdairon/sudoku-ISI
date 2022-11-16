@@ -3,6 +3,7 @@ namespace sudoku
     public partial class Jeu : Form
     {
         SudokuCell[,] cells = new SudokuCell[9, 9];
+        int fullCells = 81;
 
         public Jeu()
         {
@@ -98,6 +99,7 @@ namespace sudoku
                     // Use grille to fill cells
                     if (grid[i, j] == 0)
                     {
+                        fullCells -= 1;
                         cells[i, j].Clear();
                         cells[i, j].Font = new Font(cells[i, j].Font.Name, cells[i, j].Font.Size, FontStyle.Bold);
                     }
@@ -117,10 +119,12 @@ namespace sudoku
             if (cell.IsLocked)
                 return;
 
-            if (e.KeyCode == Keys.D0 || e.KeyCode == Keys.NumPad0)
+            if (e.KeyCode == Keys.D0 || e.KeyCode == Keys.NumPad0 || e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
             {
+                if (cell.Value != 0)
+                    fullCells -= 1;
                 cell.Clear();
-            }    
+            }
 
             // Add the pressed key value in the cell only if it is a number
             if ((e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D9) || (e.KeyCode >= Keys.NumPad1 && e.KeyCode <= Keys.NumPad9))
@@ -135,14 +139,23 @@ namespace sudoku
                         isPoss = true;
                 if (isPoss)
                 {
+                    if (cell.ForeColor == Color.Red || cell.Value == 0)
+                        fullCells += 1;
                     cell.ForeColor = Color.Black;
                 }
                 else
                 {
+                    if (cell.ForeColor == Color.Black || cell.Value == 0)
+                        fullCells -= 1;
                     cell.ForeColor = Color.Red;
                 }
                 cell.Text = value.ToString();
                 cell.Value = value;
+            }
+
+            if (fullCells == 81)
+            {
+                MessageBox.Show("Victory!");
             }
         }
 
