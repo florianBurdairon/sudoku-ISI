@@ -4,6 +4,8 @@ namespace sudoku
     {
         SudokuCell[,] cells = new SudokuCell[9, 9];
         int fullCells = 81;
+        int[] lastFocused = new int[2];
+        //System.Windows.Forms.CheckedListBox clbNotes;
 
         public Jeu()
         {
@@ -64,18 +66,21 @@ namespace sudoku
                 {
                     // Create 81 cells for with styles and locations based on the index
                     cells[i, j] = new SudokuCell();
-                    cells[i, j].Location = new Point(i * 40, j * 40);
+                    cells[i, j].Location = new Point(i * cells[i, j].Size.Width, j * cells[i, j].Size.Height);
                     cells[i, j].BackColor = ((i / 3) + (j / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
                     cells[i, j].X = i;
                     cells[i, j].Y = j;
 
                     // Assign key press event for each cells
                     cells[i, j].KeyDown += cell_keyDown;
+                    cells[i, j].Enter += cell_enterFocus;
+
 
                     panel1.Controls.Add(cells[i, j]);
                 }
             }
         }
+
 
         public void fillGrid(Grille grid)
         {
@@ -84,8 +89,7 @@ namespace sudoku
                 for (int j = 0; j < 9; j++)
                 {
                     // Use grille to fill cells
-                    cells[i, j].Text = "" + grid.GetPos(i, j);
-                    cells[i, j].Value = grid.GetPos(i, j);
+                    cells[i, j].SetValue(grid.GetPos(i, j));
                 }
             }
         }
@@ -101,11 +105,10 @@ namespace sudoku
                     {
                         fullCells -= 1;
                         cells[i, j].Clear();
-                        cells[i, j].Font = new Font(cells[i, j].Font.Name, cells[i, j].Font.Size, FontStyle.Bold);
                     }
                     else
                     {
-                        cells[i, j].IsLocked = true;
+                        cells[i, j].SetIsLocked(true);
                     }
                 }
             }
@@ -141,21 +144,37 @@ namespace sudoku
                 {
                     if (cell.ForeColor == Color.Red || cell.Value == 0)
                         fullCells += 1;
-                    cell.ForeColor = Color.Black;
+                    cell.SetIsGood(true);
                 }
                 else
                 {
                     if (cell.ForeColor == Color.Black || cell.Value == 0)
                         fullCells -= 1;
-                    cell.ForeColor = Color.Red;
+                    cell.SetIsGood(false);
                 }
-                cell.Text = value.ToString();
-                cell.Value = value;
+                cell.SetValue(value);
             }
 
             if (fullCells == 81)
             {
                 MessageBox.Show("Victory!");
+            }
+        }
+
+        private void cell_enterFocus(object? sender, EventArgs e)
+        {
+            var cell = sender as SudokuCell;
+            if (cell != null)
+            {
+                lastFocused = new int[] { cell.X, cell.Y };
+
+                if (clbNote != null)
+                {
+                    for (int i = 0; i < 9; i++)
+                    {
+                        clbNote.SetItemChecked(i, cell.GetNote()[i]);
+                    }
+                }
             }
         }
 
@@ -172,6 +191,13 @@ namespace sudoku
             }
 
             return ret;
+        }
+
+        private void clbNotes_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            // Jsp pourquoi il faut que ce soit false pour être considéré true :/
+            cells[lastFocused[0], lastFocused[1]].SetNote(e.Index, e.CurrentValue == CheckState.Unchecked);
+            cells[lastFocused[0], lastFocused[1]].Focus();
         }
     }
 }

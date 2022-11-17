@@ -29,14 +29,39 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.clbNote = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
+            // 
+            // clbNotes
+            //
+            clbNote.CheckOnClick = true;
+            clbNote.FormattingEnabled = true;
+            clbNote.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"});
+            clbNote.Location = new System.Drawing.Point(96, 162);
+            clbNote.Name = "clbNotes";
+            clbNote.Size = new System.Drawing.Size(47, 202);
+            clbNote.Sorted = true;
+            clbNote.TabIndex = 1;
+            clbNote.TabStop = false;
+            clbNote.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbNotes_ItemCheck);
+            this.Controls.Add(clbNote);
+
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(223, 80);
+            this.panel1.Location = new System.Drawing.Point(236, 51);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(411, 480);
+            this.panel1.Size = new System.Drawing.Size(450, 450);
             this.panel1.TabIndex = 0;
             // 
             // Jeu
@@ -55,5 +80,6 @@
         #endregion
 
         private Panel panel1;
+        private CheckedListBox clbNote;
     }
 }
