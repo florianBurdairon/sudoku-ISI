@@ -32,11 +32,20 @@
             this.clbNote = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
             // 
-            // clbNotes
-            //
-            clbNote.CheckOnClick = true;
-            clbNote.FormattingEnabled = true;
-            clbNote.Items.AddRange(new object[] {
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(206, 38);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(450, 450);
+            this.panel1.TabIndex = 0;
+            // 
+            // clbNote
+            // 
+            this.clbNote.BackColor = System.Drawing.SystemColors.Control;
+            this.clbNote.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.clbNote.CheckOnClick = true;
+            this.clbNote.FormattingEnabled = true;
+            this.clbNote.Items.AddRange(new object[] {
             "1",
             "2",
             "3",
@@ -46,31 +55,21 @@
             "7",
             "8",
             "9"});
-            clbNote.Location = new System.Drawing.Point(96, 162);
-            clbNote.Name = "clbNotes";
-            clbNote.Size = new System.Drawing.Size(47, 202);
-            clbNote.Sorted = true;
-            clbNote.TabIndex = 1;
-            clbNote.TabStop = false;
-            clbNote.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbNotes_ItemCheck);
-            this.Controls.Add(clbNote);
-
-            // 
-            // panel1
-            // 
-            this.panel1.Location = new System.Drawing.Point(236, 51);
-            this.panel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(450, 450);
-            this.panel1.TabIndex = 0;
+            this.clbNote.Location = new System.Drawing.Point(84, 122);
+            this.clbNote.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.clbNote.Name = "clbNote";
+            this.clbNote.Size = new System.Drawing.Size(49, 198);
+            this.clbNote.Sorted = true;
+            this.clbNote.TabIndex = 1;
+            this.clbNote.TabStop = false;
+            this.clbNote.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbNotes_ItemCheck);
             // 
             // Jeu
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(914, 600);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(921, 595);
+            this.Controls.Add(this.clbNote);
             this.Controls.Add(this.panel1);
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Jeu";
             this.Text = "Form1";
             this.ResumeLayout(false);
