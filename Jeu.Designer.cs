@@ -32,6 +32,7 @@
             this.clbNote = new System.Windows.Forms.CheckedListBox();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
+            this.btnRestart = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panelGrille
@@ -69,7 +70,7 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(740, 130);
+            this.btnStart.Location = new System.Drawing.Point(402, 515);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(94, 29);
             this.btnStart.TabIndex = 2;
@@ -79,17 +80,31 @@
             // 
             // btnHelp
             // 
-            this.btnHelp.Location = new System.Drawing.Point(740, 209);
+            this.btnHelp.Location = new System.Drawing.Point(744, 327);
             this.btnHelp.Name = "btnHelp";
-            this.btnHelp.Size = new System.Drawing.Size(94, 29);
+            this.btnHelp.Size = new System.Drawing.Size(110, 29);
             this.btnHelp.TabIndex = 3;
             this.btnHelp.Text = "Aide";
             this.btnHelp.UseVisualStyleBackColor = true;
+            this.btnHelp.Visible = false;
+            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
+            // 
+            // btnRestart
+            // 
+            this.btnRestart.Location = new System.Drawing.Point(744, 214);
+            this.btnRestart.Name = "btnRestart";
+            this.btnRestart.Size = new System.Drawing.Size(110, 29);
+            this.btnRestart.TabIndex = 4;
+            this.btnRestart.Text = "Redémarrer";
+            this.btnRestart.UseVisualStyleBackColor = true;
+            this.btnRestart.Visible = false;
+            this.btnRestart.Click += new System.EventHandler(this.btnRestart_Click);
             // 
             // Jeu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(921, 595);
+            this.Controls.Add(this.btnRestart);
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.clbNote);
@@ -106,5 +121,6 @@
         private CheckedListBox clbNote;
         private Button btnStart;
         private Button btnHelp;
+        private Button btnRestart;
     }
 }

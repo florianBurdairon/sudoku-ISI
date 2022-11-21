@@ -3,6 +3,7 @@
     class SudokuCell : Button
     {
         public int Value { get; private set; }
+        private int OriginalValue;
         public bool IsLocked { get; private set; }
         public int X { get; set; }
         public int Y { get; set; }
@@ -62,6 +63,13 @@
                     SetTextAsNote(false);
                 }
             }
+        }
+
+        // Permet de définir la valeur de base de la case
+        public void SetOriginalValue(int val)
+        {
+            this.OriginalValue = val;
+            this.SetValue(val);
         }
 
         // Défini si la valeur de la case peut être changée par l'utilisateur
@@ -141,6 +149,16 @@
             {
                 this.Font = new Font(this.Font.Name, 20, FontStyle.Bold);
                 this.Text = this.Value.ToString();
+            }
+        }
+
+        public void Help()
+        {
+            if (!this.IsLocked)
+            {
+                this.SetValue(this.OriginalValue);
+                this.SetTextAsNote(false);
+                this.ForeColor = Color.Goldenrod;
             }
         }
     }

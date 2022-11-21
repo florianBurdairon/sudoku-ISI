@@ -5,12 +5,10 @@ namespace sudoku
         SudokuCell[,] cells = new SudokuCell[9, 9];
         int fullCells = 81;
         int[] lastFocused = new int[2];
-        //System.Windows.Forms.CheckedListBox clbNotes;
 
         public Jeu()
         {
             InitializeComponent();
-
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -84,8 +82,8 @@ namespace sudoku
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    // Use grille to fill cells
-                    cells[i, j].SetValue(grid.GetPos(i, j));
+                    // Use grid to fill cells
+                    cells[i, j].SetOriginalValue(grid.GetPos(i, j));
                 }
             }
         }
@@ -175,8 +173,6 @@ namespace sudoku
                         clbNote.SetItemChecked(i, cell.GetNote()[i]);
                     }
                 }
-
-
             }
         }
 
@@ -204,9 +200,45 @@ namespace sudoku
         private void btnStart_Click(object sender, EventArgs e)
         {
             createCells();
+
             Grille grid = new Grille();
             fillGrid(grid);
             removeCell(grid.removeCells());
+
+            btnStart.Visible = false;
+            btnRestart.Visible = true;
+            btnHelp.Visible = true;
+        }
+
+        private void btnRestart_Click(object sender, EventArgs e)
+        {
+            panelGrille.Controls.Clear();
+            clbNote.Visible = false;
+            fullCells = 81;
+
+            cells = new SudokuCell[9, 9];
+            createCells();
+
+            Grille grid = new Grille();
+            fillGrid(grid);
+            removeCell(grid.removeCells());
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            if (fullCells < 80) // impossible d'avoir de l'aide pour la dernière case
+            {
+                int x;
+                int y;
+                do
+                {
+                    x = Random.Shared.Next(9);
+                    y = Random.Shared.Next(9);
+                } while (cells[x, y].IsLocked || cells[x, y].Value != 0);
+
+                cells[x, y].Help();
+                fullCells++;
+            }
         }
     }
 }
