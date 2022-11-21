@@ -10,11 +10,7 @@ namespace sudoku
         public Jeu()
         {
             InitializeComponent();
-            createCells();
 
-            Grille grid= new Grille();
-            fillGrid(grid);
-            removeCell(grid.removeCells());
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -203,6 +199,14 @@ namespace sudoku
         {
             cells[lastFocused[0], lastFocused[1]].SetNoteAt(e.Index, e.CurrentValue == CheckState.Unchecked);
             cells[lastFocused[0], lastFocused[1]].Focus();
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            createCells();
+            Grille grid = new Grille();
+            fillGrid(grid);
+            removeCell(grid.removeCells());
         }
     }
 }

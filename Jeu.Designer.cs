@@ -64,6 +64,7 @@
             this.clbNote.Sorted = true;
             this.clbNote.TabIndex = 1;
             this.clbNote.TabStop = false;
+            this.clbNote.Visible = false;
             this.clbNote.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbNotes_ItemCheck);
             // 
             // btnStart
@@ -74,6 +75,7 @@
             this.btnStart.TabIndex = 2;
             this.btnStart.Text = "Démarrer";
             this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // btnHelp
             // 
