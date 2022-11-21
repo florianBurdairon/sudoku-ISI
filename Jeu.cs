@@ -76,7 +76,7 @@ namespace sudoku
                     cells[i, j].Enter += cell_enterFocus;
 
 
-                    panel1.Controls.Add(cells[i, j]);
+                    panelGrille.Controls.Add(cells[i, j]);
                 }
             }
         }
@@ -170,11 +170,17 @@ namespace sudoku
 
                 if (clbNote != null)
                 {
+                    if (cell.IsLocked)
+                        clbNote.Visible = false;
+                    else
+                        clbNote.Visible = true;
                     for (int i = 0; i < 9; i++)
                     {
                         clbNote.SetItemChecked(i, cell.GetNote()[i]);
                     }
                 }
+
+
             }
         }
 
@@ -195,8 +201,7 @@ namespace sudoku
 
         private void clbNotes_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            // Jsp pourquoi il faut que ce soit false pour être considéré true :/
-            cells[lastFocused[0], lastFocused[1]].SetNote(e.Index, e.CurrentValue == CheckState.Unchecked);
+            cells[lastFocused[0], lastFocused[1]].SetNoteAt(e.Index, e.CurrentValue == CheckState.Unchecked);
             cells[lastFocused[0], lastFocused[1]].Focus();
         }
     }

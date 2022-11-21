@@ -28,16 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panelGrille = new System.Windows.Forms.Panel();
             this.clbNote = new System.Windows.Forms.CheckedListBox();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnHelp = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // panel1
+            // panelGrille
             // 
-            this.panel1.Location = new System.Drawing.Point(206, 38);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(450, 450);
-            this.panel1.TabIndex = 0;
+            this.panelGrille.Location = new System.Drawing.Point(206, 38);
+            this.panelGrille.Name = "panelGrille";
+            this.panelGrille.Size = new System.Drawing.Size(450, 450);
+            this.panelGrille.TabIndex = 0;
             // 
             // clbNote
             // 
@@ -64,12 +66,32 @@
             this.clbNote.TabStop = false;
             this.clbNote.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbNotes_ItemCheck);
             // 
+            // btnStart
+            // 
+            this.btnStart.Location = new System.Drawing.Point(740, 130);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(94, 29);
+            this.btnStart.TabIndex = 2;
+            this.btnStart.Text = "Démarrer";
+            this.btnStart.UseVisualStyleBackColor = true;
+            // 
+            // btnHelp
+            // 
+            this.btnHelp.Location = new System.Drawing.Point(740, 209);
+            this.btnHelp.Name = "btnHelp";
+            this.btnHelp.Size = new System.Drawing.Size(94, 29);
+            this.btnHelp.TabIndex = 3;
+            this.btnHelp.Text = "Aide";
+            this.btnHelp.UseVisualStyleBackColor = true;
+            // 
             // Jeu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(921, 595);
+            this.Controls.Add(this.btnHelp);
+            this.Controls.Add(this.btnStart);
             this.Controls.Add(this.clbNote);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panelGrille);
             this.Name = "Jeu";
             this.Text = "Form1";
             this.ResumeLayout(false);
@@ -78,7 +100,9 @@
 
         #endregion
 
-        private Panel panel1;
+        private Panel panelGrille;
         private CheckedListBox clbNote;
+        private Button btnStart;
+        private Button btnHelp;
     }
 }

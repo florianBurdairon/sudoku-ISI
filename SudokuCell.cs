@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace sudoku
+﻿namespace sudoku
 {
     class SudokuCell : Button
     {
@@ -14,13 +8,15 @@ namespace sudoku
         public int Y { get; set; }
         private bool[] Note = new bool[9] { false, false, false, false, false, false, false, false, false };
 
+        // Reset la case
         public void Clear()
         {
             this.SetValue(0);
             this.SetIsLocked(false);
-            this.SetIsGood(true);
+            this.SetTextAsNote(true);
         }
 
+        // Constructeur par défaut, sans paramètre
         public SudokuCell()
         {
             this.Font = new Font(SystemFonts.DefaultFont.FontFamily, 20);
@@ -31,6 +27,7 @@ namespace sudoku
 
         }
 
+        // Constructeur avec paramètres
         public SudokuCell(int value = 0, bool islocked = false, bool isgood = true)
         {
             this.Font = new Font(SystemFonts.DefaultFont.FontFamily, 20);
@@ -42,9 +39,10 @@ namespace sudoku
 
             this.SetValue(value);
             this.SetIsLocked(islocked);
-            this.SetIsGood(isgood);
+            this.SetTextAsNote(true);
         }
 
+        // Change la valeur dans la case selon *value*
         public void SetValue(int value = 0)
         {
             if (!this.IsLocked)
@@ -56,23 +54,23 @@ namespace sudoku
                         this.Text = string.Empty;
                     else
                     {
-                        this.Font = new Font(SystemFonts.DefaultFont.FontFamily, 6, FontStyle.Italic);
-                        this.Text = GetStringFromNote();
+                        SetTextAsNote(true);
                     }
                 }
                 else
                 {
-                    this.Font = new Font(this.Font.Name, 20, FontStyle.Bold);
-                    this.Text = value.ToString();
+                    SetTextAsNote(false);
                 }
             }
         }
 
+        // Défini si la valeur de la case peut être changée par l'utilisateur
         public void SetIsLocked(bool islocked = true)
         {
             this.IsLocked = islocked;
         }
 
+        // Change la couleur si la valeur est possible
         public void SetIsGood(bool isgood = true)
         {
             if (isgood)
@@ -81,26 +79,17 @@ namespace sudoku
                 this.ForeColor = Color.Red;
         }
 
-        public void SetNote(string note)
-        {
-            SetNoteFromString(note);
-            if (this.Value == 0)
-            {
-                this.Font = new Font(this.Font.Name, 6, FontStyle.Italic);
-                this.Text = GetStringFromNote();
-            }
-        }
-
-        public void SetNote(int index, bool val)
+        // Défini si l'annotation *index* est vraie ou fausse : *val*
+        public void SetNoteAt(int index, bool val)
         {
             this.Note[index] = val;
             if (this.Value == 0)
             {
-                this.Font = new Font(this.Font.Name, 6, FontStyle.Italic);
-                this.Text = GetStringFromNote();
+                SetTextAsNote(true);
             }
         }
 
+        // Retourne true si il n'y a aucune annotation sur la case
         private bool IsNoteEmpty()
         {
             foreach (bool b in Note)
@@ -110,6 +99,7 @@ namespace sudoku
             return true;
         }
 
+        // Permet de définir les annotations grâce à un string
         private void SetNoteFromString(string note)
         {
             foreach(char c in note)
@@ -118,6 +108,7 @@ namespace sudoku
             }
         }
 
+        // Retourne l'ensemble des annotations sous forme de string
         private string GetStringFromNote()
         {
             string ret = "";
@@ -130,9 +121,27 @@ namespace sudoku
             return ret;
         }
 
+        // Retourne l'ensemble des annotations sous forme de tableau de booléans
         public bool[] GetNote()
         {
             return this.Note;
+        }
+
+        // Change les paramètres si le texte de la case est une annotation (Note!=null) ou une valeur
+        private void SetTextAsNote(bool isNote)
+        {
+            if (isNote)
+            {
+                int fontsize = Math.Max(14 - GetStringFromNote().Length, 6);
+                this.Font = new Font(this.Font.Name, fontsize, FontStyle.Italic);
+                this.Text = GetStringFromNote();
+                this.ForeColor = Color.Blue;
+            }
+            else
+            {
+                this.Font = new Font(this.Font.Name, 20, FontStyle.Bold);
+                this.Text = this.Value.ToString();
+            }
         }
     }
 }
