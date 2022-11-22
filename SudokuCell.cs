@@ -159,6 +159,7 @@
                 this.SetValue(this.OriginalValue);
                 this.SetTextAsNote(false);
                 this.ForeColor = Color.Goldenrod;
+                this.IsLocked = true;
             }
         }
     }
