@@ -16,6 +16,18 @@ namespace sudoku
         {
             InitializeComponent();
 
+
+            // 
+            // btnContinue
+            // 
+            this.btnContinue.Location = new System.Drawing.Point(277, 253);
+            this.btnContinue.Name = "btnContinue";
+            this.btnContinue.Size = new System.Drawing.Size(128, 29);
+            this.btnContinue.TabIndex = 3;
+            this.btnContinue.Text = "Reprendre la partie";
+            this.btnContinue.UseVisualStyleBackColor = true;
+            this.btnContinue.Click += new System.EventHandler(this.btnContinue_Click);
+
             leaderboard = new Leaderboard();
             leaderboard.AddScore("Alban", 295, 0);
             leaderboard.AddScore("Thomas", 1503, 2);
@@ -271,6 +283,8 @@ namespace sudoku
             InitializeStart();
 
             btnStart.Visible = false;
+            btnContinue.Visible = false;
+            lbTime.Visible = true;
             btnRestart.Visible = true;
             btnHelp.Visible = true;
         }
@@ -284,6 +298,7 @@ namespace sudoku
         {
             if (fullCells < 80) // impossible d'avoir de l'aide pour la dernière case
             {
+                fullCells++;
                 int x;
                 int y;
                 do
@@ -293,11 +308,14 @@ namespace sudoku
                 } while (cells[x, y].IsLocked || cells[x, y].Value != 0);
 
                 cells[x, y].Help();
-                fullCells++;
 
                 // Ajouter du temps si utilisation de l'aide
                 AddToTime((int)Math.Min(Math.Pow(2, nbHelp), 300));
                 nbHelp++;
+            }
+            else
+            {
+                MessageBox.Show("Aide non disponible pour la dernière case.");
             }
             btnHelp.Text = "Aide (+" + (int)Math.Min(Math.Pow(2, nbHelp), 300) + "s)";
         }
@@ -329,6 +347,16 @@ namespace sudoku
             lbTime.Text += m + ":" + s; 
         }
 
+        private string GetPossibleValues(SudokuCell[,] grid, int x, int y, string alreadyUsed = "")
+        {
+            int[,] ints = new int[9, 9];
+            for (int i = 0; i < 9; i++)
+                for (int j = 0; j < 9; j++)
+                    ints[i, j] = grid[i, j].Value;
+
+            return Grille.GetPossibleValues(ints, x, y, alreadyUsed);
+        }
+
         private void LoadLeaderboard()
         {
             listLeaderboard.Items.Clear();
@@ -356,6 +384,7 @@ namespace sudoku
             this.nbHelp = save.nbHelp;
             this.fullCells = save.fullCells;
             this.cells = loadCells(save);
+            this.lastFocused = new int[2] { 0, 0 };
         }
 
         private SudokuCell[,] loadCells(SaveGame save)
@@ -367,16 +396,63 @@ namespace sudoku
                 for(int j = 0; j < 9; j++)
                 {
                     grid[i, j] = new SudokuCell();
+                    grid[i, j].Location = new Point(i * grid[i, j].Size.Width, j * grid[i, j].Size.Height);
+                    grid[i, j].BackColor = ((i / 3) + (j / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
                     grid[i, j].X = save.grid[i * 9 + j].X;
                     grid[i, j].Y = save.grid[i * 9 + j].Y;
-                    grid[i, j].SetValue(save.grid[i * 9 + j].Value);
                     grid[i, j].SetOriginalValue(save.grid[i * 9 + j].OriginalValue);
-                    grid[i, j].SetIsLocked(save.grid[i * 9 + j].IsLocked);
+                    grid[i, j].SetValue(save.grid[i * 9 + j].Value);
                     grid[i, j].SetNote(save.grid[i * 9 + j].Note);
+                    grid[i, j].SetIsLocked(save.grid[i * 9 + j].IsLocked);
+
+                    grid[i, j].KeyDown += cell_keyDown;
+                    grid[i, j].Enter += cell_enterFocus;
+
+
+                    panelGrille.Controls.Add(grid[i, j]);
+                }
+            }
+
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    bool good = false;
+                    string poss = GetPossibleValues(grid, i, j);
+                    for (int k = 0; k < poss.Length; k++)
+                        if (poss[k] - '0' == grid[i, j].Value)
+                            good = true;
+                    grid[i, j].SetIsGood(good);
+                    
                 }
             }
 
             return grid;
+        }
+
+        private void Jeu_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            serializeGame();
+        }
+
+        private void btnContinue_Click(object sender, EventArgs e)
+        {
+            btnStart.Visible = false;
+            btnContinue.Visible = false;
+            lbTime.Visible = true;
+            btnRestart.Visible = true;
+            btnHelp.Visible = true;
+
+            panelGrille.Controls.Clear();
+
+            AddToTime(0);
+
+            deserializeGame();
+
+            clbNote.Visible = false;
+            btnHelp.Text = "Aide (+" + (int)Math.Min(Math.Pow(2, nbHelp), 300) + "s)";
+
+            timer.Start();
         }
     }
 }

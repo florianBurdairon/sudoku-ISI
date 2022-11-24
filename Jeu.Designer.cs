@@ -30,21 +30,35 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panelGrille = new System.Windows.Forms.Panel();
-            this.clbNote = new System.Windows.Forms.CheckedListBox();
+            this.btnContinue = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
+            this.clbNote = new System.Windows.Forms.CheckedListBox();
             this.btnHelp = new System.Windows.Forms.Button();
             this.btnRestart = new System.Windows.Forms.Button();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.lbTime = new System.Windows.Forms.Label();
             this.listLeaderboard = new System.Windows.Forms.ListBox();
+            this.panelGrille.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelGrille
             // 
+            this.panelGrille.Controls.Add(this.btnContinue);
+            this.panelGrille.Controls.Add(this.btnStart);
             this.panelGrille.Location = new System.Drawing.Point(206, 38);
             this.panelGrille.Name = "panelGrille";
             this.panelGrille.Size = new System.Drawing.Size(450, 450);
             this.panelGrille.TabIndex = 0;
+            // 
+            // btnStart
+            // 
+            this.btnStart.Location = new System.Drawing.Point(101, 253);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(128, 29);
+            this.btnStart.TabIndex = 2;
+            this.btnStart.Text = "Nouvelle partie";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // clbNote
             // 
@@ -71,16 +85,6 @@
             this.clbNote.TabStop = false;
             this.clbNote.Visible = false;
             this.clbNote.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbNotes_ItemCheck);
-            // 
-            // btnStart
-            // 
-            this.btnStart.Location = new System.Drawing.Point(372, 494);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(94, 29);
-            this.btnStart.TabIndex = 2;
-            this.btnStart.Text = "Démarrer";
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // btnHelp
             // 
@@ -114,16 +118,17 @@
             this.lbTime.AutoSize = true;
             this.lbTime.Location = new System.Drawing.Point(393, 539);
             this.lbTime.Name = "lbTime";
-            this.lbTime.Size = new System.Drawing.Size(53, 20);
+            this.lbTime.Size = new System.Drawing.Size(42, 15);
             this.lbTime.TabIndex = 5;
             this.lbTime.Text = "Time : ";
+            this.lbTime.Visible = false;
             // 
             // listLeaderboard
             // 
             this.listLeaderboard.BackColor = System.Drawing.SystemColors.Control;
             this.listLeaderboard.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listLeaderboard.FormattingEnabled = true;
-            this.listLeaderboard.ItemHeight = 20;
+            this.listLeaderboard.ItemHeight = 15;
             this.listLeaderboard.Items.AddRange(new object[] {
             "1",
             "2",
@@ -133,7 +138,7 @@
             this.listLeaderboard.Name = "listLeaderboard";
             this.listLeaderboard.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.listLeaderboard.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.listLeaderboard.Size = new System.Drawing.Size(150, 440);
+            this.listLeaderboard.Size = new System.Drawing.Size(150, 435);
             this.listLeaderboard.TabIndex = 6;
             this.listLeaderboard.TabStop = false;
             // 
@@ -145,11 +150,12 @@
             this.Controls.Add(this.lbTime);
             this.Controls.Add(this.btnRestart);
             this.Controls.Add(this.btnHelp);
-            this.Controls.Add(this.btnStart);
             this.Controls.Add(this.clbNote);
             this.Controls.Add(this.panelGrille);
             this.Name = "Jeu";
             this.Text = "Sudoku";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Jeu_FormClosed);
+            this.panelGrille.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -165,5 +171,6 @@
         private System.Windows.Forms.Timer timer;
         private Label lbTime;
         private ListBox listLeaderboard;
+        private Button btnContinue;
     }
 }
