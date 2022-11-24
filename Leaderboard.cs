@@ -2,17 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace sudoku
 {
+    [Serializable]
     internal class Leaderboard
     {
-        List<Score> scores;
+        public List<Score> scores { get; set; }
 
         public Leaderboard()
         {
             scores = new List<Score>();
+        }
+
+        [JsonConstructor]
+        public Leaderboard(List<Score> scores)
+        {
+            if(scores != null)
+                this.scores = scores;
+            else
+                this.scores = new List<Score>();
         }
 
         public void AddScore(Score score)

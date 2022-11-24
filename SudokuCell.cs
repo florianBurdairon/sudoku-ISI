@@ -89,10 +89,14 @@
         // Change la couleur si la valeur est possible
         public void SetIsGood(bool isgood = true)
         {
-            if (isgood)
-                this.ForeColor = Color.Black;
-            else
-                this.ForeColor = Color.Red;
+            if (!IsLocked)
+            {
+                if (isgood)
+                    this.ForeColor = Color.Black;
+                else
+                    this.ForeColor = Color.Red;
+            }
+            
         }
 
         // Défini si l'annotation *index* est vraie ou fausse : *val*
@@ -103,6 +107,11 @@
             {
                 SetTextAsNote(true);
             }
+        }
+
+        public void SetNote(bool[] Note)
+        {
+            this.Note = Note;
         }
 
         // Retourne true si il n'y a aucune annotation sur la case
@@ -169,6 +178,11 @@
                 this.ForeColor = Color.LimeGreen;
                 this.IsLocked = true;
             }
+        }
+
+        public int GetOriginalValue()
+        {
+            return this.OriginalValue;
         }
     }
 }
