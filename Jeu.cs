@@ -28,16 +28,19 @@ namespace sudoku
             this.btnContinue.UseVisualStyleBackColor = true;
             this.btnContinue.Click += new System.EventHandler(this.btnContinue_Click);
 
-            leaderboard = new Leaderboard();
-            leaderboard.AddScore("Alban", 295, 0);
-            leaderboard.AddScore("Thomas", 1503, 2);
-            leaderboard.AddScore("Florian", 458, 1);
-            leaderboard.AddScore("Alban", 295, 0);
-            leaderboard.AddScore("Thomas", 1503, 2);
-            leaderboard.AddScore("Florian", 458, 1);
-            leaderboard.AddScore("Alban", 295, 0);
-            leaderboard.AddScore("Thomas", 1503, 2);
-            leaderboard.AddScore("Florian", 458, 1);
+            try
+            {
+                string jsonString = File.ReadAllText(@"..\..\..\Data\leaderboard.json");
+                Leaderboard? tmp = JsonSerializer.Deserialize<Leaderboard>(jsonString);
+                if (tmp != null)
+                    leaderboard = tmp;
+                else
+                    leaderboard = new Leaderboard();
+            }
+            catch(Exception e)
+            {
+                leaderboard = new Leaderboard();
+            }
             LoadLeaderboard();
         }
 
@@ -249,6 +252,9 @@ namespace sudoku
         public void SaveScore(string username = "Guest")
         {
             leaderboard.AddScore(username, time, nbHelp);
+            string fileName = @"..\..\..\Data\leaderboard.json";
+            string jsonString = JsonSerializer.Serialize(leaderboard);
+            File.WriteAllText(fileName, jsonString);
             LoadLeaderboard();
         }
 
@@ -444,7 +450,7 @@ namespace sudoku
             btnHelp.Visible = true;
 
             panelGrille.Controls.Clear();
-
+                        
             AddToTime(0);
 
             deserializeGame();
