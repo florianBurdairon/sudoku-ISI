@@ -22,7 +22,7 @@ namespace sudoku
             //grille = removeCells();
         }
 
-        public string GetPossibleValues(int[,] grid, int nb, string alreadyUsed = "")
+        static public string GetPossibleValues(int[,] grid, int nb, string alreadyUsed = "")
         {
             return GetPossibleValues(grid, nb % 9, nb / 9, alreadyUsed);
         }
