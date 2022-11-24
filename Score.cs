@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace sudoku
 {
+    [Serializable]
     internal class Score : IComparable<Score>
     {
-        public string username { get; private set; }
-        public int time { get; private set; }
-        public int nbHelp { get; private set; }
+        public string username { get; set; }
+        public int time { get; set; }
+        public int nbHelp { get; set; }
 
         public Score()
         {
@@ -20,6 +22,7 @@ namespace sudoku
             nbHelp = 0;
         }
 
+        [JsonConstructor]
         public Score(string username, int time, int nbHelp)
         {
             this.username = username;
