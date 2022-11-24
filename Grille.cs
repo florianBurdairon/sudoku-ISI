@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace sudoku
 {
@@ -178,6 +181,7 @@ namespace sudoku
 
                 // On sauvegarde sa valeur si jamais
                 int saveValue = grid[nb % 9, nb / 9];
+
                 // On l'enlève du tableau
                 grid[nb % 9, nb / 9] = 0;
 
@@ -193,6 +197,157 @@ namespace sudoku
 
                 // On supprime cette case des cases non traitées
                 possibleToRemove.RemoveAt(indexNb);
+            }
+
+            return grid;
+        }
+
+        private bool IsUnique(int[,] grid)
+        {
+            int nbSolution = 0;
+
+            // Récupérer les cases qu'il faut traiter
+            List<int> emptyCells = new List<int>();
+            for (int x = 0; x < 9; x++)
+                for (int y = 0; y < 9; y++)
+                {
+                    if (grid[x, y] == 0)
+                        emptyCells.Add(x + y * 9);
+                }
+
+            List<int> filledCells = new List<int>();
+
+            // On stocke chaque étape qu'on va faire sour cette forme :
+            // "X Y R1 R2 R3 . . . R9"
+            // X et Y sont la position de la case utilisée
+            // R1 R2 R3 ... R9 sont les valeurs déjà testées sur cette case, il peut y en avoir entre 0 et 9
+            List<string> pile = new List<string>();
+
+            while (emptyCells.Count > 0)
+            {
+                //int randInd = Random.Shared.Next(emptyCells.Count);
+                int randVal = emptyCells.Last<int>();
+
+                string cellPoss = "";
+
+                if (pile.Count == 0) // Premier test
+                {
+                    cellPoss = GetPossibleValues(grid, randVal);
+                }
+                else // Tous les autres tests
+                {
+                    // On est revenu sur la case précédente => Pile
+                    if (pile.Last<string>()[0] - '0' == randVal % 9 && pile.Last<string>()[1] - '0' == randVal / 9)
+                    {
+                        cellPoss = GetPossibleValues(grid, randVal, pile.Last<string>());
+                    }
+                    else // Sinon, nouvelle case
+                    {
+                        cellPoss = GetPossibleValues(grid, randVal);
+                    }
+                }
+
+                // Dernière case
+                if (emptyCells.Count == 1)
+                {
+                    nbSolution += cellPoss.Length;
+
+                    cellPoss = ""; // => Forcer la continuation de l'algorithme
+
+                    if (nbSolution >= 2)
+                        return false;
+                }
+                // Première case + Pas de possibilités
+                if (filledCells.Count == 0)
+                {
+                    if (cellPoss.Length == 0)
+                        return true;
+                }
+                else if (filledCells.Count == 1)
+                {
+                    string oui = cellPoss;
+                }
+
+                // Aucune possibilité pour la case actuelle => On remonte d'une case avant
+                if (cellPoss.Length == 0)
+                {
+                    grid[randVal % 9, randVal / 9] = 0;
+
+                    if (filledCells.Count > 0)
+                    {
+                        // On rajoute la case d'avant -> A traiter de nouveau
+                        emptyCells.Add(filledCells.Last<int>());
+                        // On enlève la case d'avant de celles déjà traitées
+                        filledCells.RemoveAt(filledCells.Count - 1);
+                    }
+
+                    if (pile.Count > 0)
+                        if (pile.Last<string>()[0] - '0' == randVal % 9 && pile.Last<string>()[1] - '0' == randVal / 9)
+                            pile.RemoveAt(pile.Count - 1);
+                }
+                // Possibilité(s) pour la case actuelle 
+                else
+                {
+                    int ind = Random.Shared.Next(cellPoss.Length);
+                    int val = cellPoss[ind] - '0';
+
+                    grid[randVal % 9, randVal / 9] = val;
+
+                    // Gestion de la pile
+                    string lastPile = "" + randVal % 9 + randVal / 9 + val;
+                    if (pile.Count > 0)
+                        if (pile.Last<string>()[0] - '0' == randVal % 9 && pile.Last<string>()[1] - '0' == randVal / 9)
+                        {
+                            lastPile = pile.Last<string>() + val;
+                            pile.RemoveAt(pile.Count - 1);
+                        }
+                    pile.Add(lastPile);
+
+                    // On enlève la case de celles à traiter
+                    emptyCells.RemoveAt(emptyCells.Count - 1);
+                    // On ajoute la case à celles traitées
+                    filledCells.Add(randVal);
+                }
+            }
+
+            return true;
+        }
+
+        public int[,] RemoveCellsHard()
+        {
+            int[,] grid = new int[9, 9];
+
+            for (int x = 0; x < 9; x++)
+                for (int y = 0; y < 9; y++)
+                    grid[x, y] = grille[x, y];
+
+            grid[0, 0] = 0;
+
+            List<int> leftCells = new List<int>();
+            for (int i = 0; i < 81; i++)
+                leftCells.Add(i);
+
+            while (leftCells.Count > 30)
+            {
+                int randInd = Random.Shared.Next(leftCells.Count);
+                int randVal = leftCells[randInd];
+
+                int[,] gridTest = new int[9, 9];
+
+                for (int x = 0; x < 9; x++)
+                    for (int y = 0; y < 9; y++)
+                        gridTest[x, y] = grid[x, y];
+
+                gridTest[randVal % 9, randVal / 9] = 0;
+
+                bool isUnique = IsUnique(gridTest);
+
+                if (isUnique)
+                {
+                    grid[randVal % 9, randVal / 9] = 0;
+                }
+
+                leftCells.RemoveAt(randInd);
             }
 
             return grid;
