@@ -258,7 +258,7 @@ namespace sudoku
 
             Grille grid = new Grille();
             fillGrid(grid);
-            removeCell(grid.removeCells());
+            removeCell(grid.RemoveCellsHard());
 
             btnHelp.Text = "Aide (+1s)";
 
