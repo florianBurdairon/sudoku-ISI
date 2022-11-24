@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Xml.Linq;
+
 namespace sudoku
 {
     public partial class Jeu : Form
@@ -227,7 +230,6 @@ namespace sudoku
         private void Victory()
         {
             timer.Stop();
-
             ChoiceUsername cu = new ChoiceUsername(this);
             cu.Show();
         }
@@ -335,6 +337,46 @@ namespace sudoku
             {
                 listLeaderboard.Items.Add(lb[i].ToString());
             }
+        }
+
+        private void serializeGame()
+        {
+            SaveGame save = new SaveGame(cells, fullCells, time, nbHelp);
+            string fileName = @"..\..\..\Data\save.json";
+            string jsonString = JsonSerializer.Serialize(save);
+            File.WriteAllText(fileName, jsonString);
+
+        }
+
+        private void deserializeGame()
+        {
+            string jsonString = File.ReadAllText(@"..\..\..\Data\save.json");
+            SaveGame? save = JsonSerializer.Deserialize<SaveGame>(jsonString);
+            this.time = save.time;
+            this.nbHelp = save.nbHelp;
+            this.fullCells = save.fullCells;
+            this.cells = loadCells(save);
+        }
+
+        private SudokuCell[,] loadCells(SaveGame save)
+        {
+            SudokuCell[,] grid = new SudokuCell[9, 9];
+
+            for(int i = 0; i < 9; i++)
+            {
+                for(int j = 0; j < 9; j++)
+                {
+                    grid[i, j] = new SudokuCell();
+                    grid[i, j].X = save.grid[i * 9 + j].X;
+                    grid[i, j].Y = save.grid[i * 9 + j].Y;
+                    grid[i, j].SetValue(save.grid[i * 9 + j].Value);
+                    grid[i, j].SetOriginalValue(save.grid[i * 9 + j].OriginalValue);
+                    grid[i, j].SetIsLocked(save.grid[i * 9 + j].IsLocked);
+                    grid[i, j].SetNote(save.grid[i * 9 + j].Note);
+                }
+            }
+
+            return grid;
         }
     }
 }
