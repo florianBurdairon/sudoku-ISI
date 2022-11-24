@@ -38,7 +38,7 @@ namespace sudoku
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            jeu.SaveScore(tbUsername.Text != "" ? tbUsername.Text : "Guest");
+            jeu.SaveScore(tbUsername.Text != "" ? tbUsername.Text : "Invité");
             this.Close();
         }
 
