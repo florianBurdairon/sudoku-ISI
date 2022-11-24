@@ -105,6 +105,11 @@
             }
         }
 
+        public void SetNote(bool[] Note)
+        {
+            this.Note = Note;
+        }
+
         // Retourne true si il n'y a aucune annotation sur la case
         private bool IsNoteEmpty()
         {
@@ -169,6 +174,11 @@
                 this.ForeColor = Color.LimeGreen;
                 this.IsLocked = true;
             }
+        }
+
+        public int GetOriginalValue()
+        {
+            return this.OriginalValue;
         }
     }
 }
