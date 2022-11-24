@@ -2,13 +2,28 @@ namespace sudoku
 {
     public partial class Jeu : Form
     {
-        SudokuCell[,] cells = new SudokuCell[9, 9];
-        int fullCells = 81;
-        int[] lastFocused = new int[2];
+        private SudokuCell[,] cells = new SudokuCell[9, 9];
+        private int fullCells = 81;
+        private int[] lastFocused = new int[2];
+        public int time {get; private set;}
+        public int nbHelp { get; private set; }
+        private Leaderboard leaderboard;
 
         public Jeu()
         {
             InitializeComponent();
+
+            leaderboard = new Leaderboard();
+            leaderboard.AddScore("Alban", 295, 0);
+            leaderboard.AddScore("Thomas", 1503, 2);
+            leaderboard.AddScore("Florian", 458, 1);
+            leaderboard.AddScore("Alban", 295, 0);
+            leaderboard.AddScore("Thomas", 1503, 2);
+            leaderboard.AddScore("Florian", 458, 1);
+            leaderboard.AddScore("Alban", 295, 0);
+            leaderboard.AddScore("Thomas", 1503, 2);
+            leaderboard.AddScore("Florian", 458, 1);
+            LoadLeaderboard();
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -151,7 +166,7 @@ namespace sudoku
 
             if (fullCells == 81)
             {
-                MessageBox.Show("Victory!");
+                Victory();
             }
         }
 
@@ -173,6 +188,24 @@ namespace sudoku
                         clbNote.SetItemChecked(i, cell.GetNote()[i]);
                     }
                 }
+
+                // Changer la couleur de la ligne, colonne et carré qui impacte la case
+                for (int x = 0; x < 9; x++)
+                    for (int y = 0; y < 9; y++)
+                    {
+                        Color c = ((x / 3) + (y / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
+                        Color col = Color.FromArgb((int)(0.5f * c.R + 0.5f * 210f), (int)(0.5f * c.G + 0.5f * 210f), 255);
+                        if (lastFocused[0] == x && lastFocused[1] == y)
+                            cells[x, y].BackColor = ((x / 3) + (y / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
+                        else if (lastFocused[0] == x)
+                            cells[x, y].BackColor = col;
+                        else if (lastFocused[1] == y)
+                            cells[x, y].BackColor = col;
+                        else if (lastFocused[0] / 3 == x / 3 && lastFocused[1] / 3 == y / 3)
+                            cells[x, y].BackColor = col;
+                        else
+                            cells[x, y].BackColor = ((x / 3) + (y / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
+                    }
             }
         }
 
@@ -191,19 +224,49 @@ namespace sudoku
             return ret;
         }
 
+        private void Victory()
+        {
+            timer.Stop();
+
+            ChoiceUsername cu = new ChoiceUsername(this);
+            cu.Show();
+        }
+
+        public void SaveScore(string username = "Guest")
+        {
+            leaderboard.AddScore(username, time, nbHelp);
+            LoadLeaderboard();
+        }
+
         private void clbNotes_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             cells[lastFocused[0], lastFocused[1]].SetNoteAt(e.Index, e.CurrentValue == CheckState.Unchecked);
             cells[lastFocused[0], lastFocused[1]].Focus();
         }
 
-        private void btnStart_Click(object sender, EventArgs e)
+        private void InitializeStart()
         {
+            panelGrille.Controls.Clear();
+            clbNote.Visible = false;
+            fullCells = 81;
+            nbHelp = 0;
+
+            cells = new SudokuCell[9, 9];
             createCells();
 
             Grille grid = new Grille();
             fillGrid(grid);
             removeCell(grid.removeCells());
+
+            btnHelp.Text = "Aide (+1s)";
+
+            AddToTime(0);
+            timer.Start();
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            InitializeStart();
 
             btnStart.Visible = false;
             btnRestart.Visible = true;
@@ -212,16 +275,7 @@ namespace sudoku
 
         private void btnRestart_Click(object sender, EventArgs e)
         {
-            panelGrille.Controls.Clear();
-            clbNote.Visible = false;
-            fullCells = 81;
-
-            cells = new SudokuCell[9, 9];
-            createCells();
-
-            Grille grid = new Grille();
-            fillGrid(grid);
-            removeCell(grid.removeCells());
+            InitializeStart();
         }
 
         private void btnHelp_Click(object sender, EventArgs e)
@@ -238,6 +292,48 @@ namespace sudoku
 
                 cells[x, y].Help();
                 fullCells++;
+
+                // Ajouter du temps si utilisation de l'aide
+                AddToTime((int)Math.Min(Math.Pow(2, nbHelp), 300));
+                nbHelp++;
+            }
+            btnHelp.Text = "Aide (+" + (int)Math.Min(Math.Pow(2, nbHelp), 300) + "s)";
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            AddToTime(1);
+        }
+
+        private void AddToTime(int val)
+        {
+            if (val != 0)
+                time += val;
+            else
+                time = 0;
+
+            lbTime.Text = "Time : ";
+            if (time / 3600 > 0)
+            {
+                lbTime.Text += (time / 3600).ToString() + ":";
+            }
+            string m = ((time % 3600) / 60).ToString();
+            if (m.Length == 1)
+                m = "0" + m;
+            string s = (time % 60).ToString();
+            if (s.Length == 1)
+                s = "0" + s;
+
+            lbTime.Text += m + ":" + s; 
+        }
+
+        private void LoadLeaderboard()
+        {
+            listLeaderboard.Items.Clear();
+            List<Score> lb = leaderboard.GetLeaderboard();
+            for (int i = 0; i < lb.Count; i++)
+            {
+                listLeaderboard.Items.Add(lb[i].ToString());
             }
         }
     }
