@@ -22,10 +22,9 @@
         {
             this.Font = new Font(SystemFonts.DefaultFont.FontFamily, 20);
             this.Size = new Size(50, 50);
-            this.ForeColor = SystemColors.ControlDarkDark;
+            this.ForeColor = SystemColors.GrayText;
             this.FlatStyle = FlatStyle.Flat;
             this.FlatAppearance.BorderColor = Color.Black;
-
         }
 
         // Constructeur avec paramètres
@@ -33,7 +32,7 @@
         {
             this.Font = new Font(SystemFonts.DefaultFont.FontFamily, 20);
             this.Size = new Size(50, 50);
-            this.ForeColor = SystemColors.ControlDarkDark;
+            this.ForeColor = SystemColors.GrayText;
             this.FlatStyle = FlatStyle.Flat;
             this.FlatAppearance.BorderColor = Color.Black;
 
@@ -76,6 +75,15 @@
         public void SetIsLocked(bool islocked = true)
         {
             this.IsLocked = islocked;
+            if (this.IsLocked)
+            {
+                this.Font = new Font(this.Font.Name, this.Font.Size, FontStyle.Regular);
+                this.ForeColor = Color.Gray;
+            }
+            else
+            {
+                this.Font = new Font(this.Font.Name, this.Font.Size, FontStyle.Bold);
+            }
         }
 
         // Change la couleur si la valeur est possible
@@ -158,7 +166,7 @@
             {
                 this.SetValue(this.OriginalValue);
                 this.SetTextAsNote(false);
-                this.ForeColor = Color.Goldenrod;
+                this.ForeColor = Color.LimeGreen;
                 this.IsLocked = true;
             }
         }
