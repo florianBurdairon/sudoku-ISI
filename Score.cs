@@ -14,20 +14,23 @@ namespace sudoku
         public string username { get; set; }
         public int time { get; set; }
         public int nbHelp { get; set; }
+        public Difficulty difficulty { get; set; }
 
         public Score()
         {
             username = "";
             time = 0;
             nbHelp = 0;
+            difficulty = Difficulty.None;
         }
 
         [JsonConstructor]
-        public Score(string username, int time, int nbHelp)
+        public Score(string username, int time, int nbHelp, Difficulty difficulty)
         {
             this.username = username;
             this.time = time;
             this.nbHelp = nbHelp;
+            this.difficulty = difficulty;
         }
         
         public override string ToString()

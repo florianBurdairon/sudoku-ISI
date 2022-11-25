@@ -14,12 +14,20 @@ namespace sudoku
     {
         // Grille complète
         public int[,] grille { get; }
+        private Difficulty difficulty = Difficulty.None;
 
         public Grille()
         {
             grille = new int[9, 9];
             GenerateGrid();
             //grille = removeCells();
+        }
+
+        public Grille(Difficulty diff)
+        {
+            grille = new int[9, 9];
+            this.difficulty = diff;
+            GenerateGrid();
         }
 
         static public string GetPossibleValues(int[,] grid, int nb, string alreadyUsed = "")
@@ -313,8 +321,10 @@ namespace sudoku
             return true;
         }
 
-        public int[,] RemoveCellsHard()
+        public int[,] RemoveCellsHard(Difficulty diff)
         {
+            this.difficulty = diff;
+
             int[,] grid = new int[9, 9];
 
             for (int x = 0; x < 9; x++)
@@ -327,7 +337,13 @@ namespace sudoku
             for (int i = 0; i < 81; i++)
                 leftCells.Add(i);
 
-            while (leftCells.Count > 30)
+            int limit = 50;
+            if (difficulty == Difficulty.Moyen)
+                limit = 40;
+            else if (difficulty == Difficulty.Difficile)
+                limit = 30;
+
+            while (leftCells.Count > limit)
             {
                 int randInd = Random.Shared.Next(leftCells.Count);
                 int randVal = leftCells[randInd];
