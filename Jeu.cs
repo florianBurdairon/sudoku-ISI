@@ -106,7 +106,14 @@ namespace sudoku
                         if (newCoords[1] == -1) newCoords[1] = 8;
                     }
 
-                cells[newCoords[0], newCoords[1]].Focus();
+                try
+                {
+                    cells[newCoords[0], newCoords[1]].Focus();
+                }
+                catch (Exception e) 
+                {
+                    cells[0, 0].Focus();
+                }
                 return true;
             }
 
