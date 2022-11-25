@@ -59,6 +59,7 @@
             // tbUsername
             // 
             this.tbUsername.Location = new System.Drawing.Point(259, 134);
+            this.tbUsername.MaxLength = 20;
             this.tbUsername.Name = "tbUsername";
             this.tbUsername.Size = new System.Drawing.Size(125, 27);
             this.tbUsername.TabIndex = 2;

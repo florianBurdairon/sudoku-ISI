@@ -37,18 +37,20 @@ namespace sudoku
         public int time { get; set; }
         public int nbHelp { get; set; }
         public Cell[] grid { get; set; } = new Cell[81];
+        public Difficulty difficulty { get; set;}
 
         [JsonConstructor]
-        public SaveGame(int fullCells, int time, int nbHelp, Cell[] grid)
+        public SaveGame(int fullCells, int time, int nbHelp, Cell[] grid, Difficulty difficulty)
         {
 
             this.fullCells = fullCells;
             this.time = time;
             this.nbHelp = nbHelp;
             this.grid = grid;
+            this.difficulty = difficulty;
         }
 
-        public SaveGame(SudokuCell[,] cells, int fullCells, int time, int nbHelp)
+        public SaveGame(SudokuCell[,] cells, int fullCells, int time, int nbHelp, Difficulty difficulty)
         {
             
             this.fullCells = fullCells;
@@ -58,6 +60,7 @@ namespace sudoku
             {
                 grid[i] = new Cell(cells[i / 9, i % 9].Value, cells[i / 9, i % 9].GetOriginalValue(), cells[i / 9, i % 9].IsLocked, cells[i / 9, i % 9].X, cells[i / 9, i % 9].Y, cells[i / 9, i % 9].GetNote());
             }
+            this.difficulty = difficulty;
         }
     }
 }

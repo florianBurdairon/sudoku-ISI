@@ -292,12 +292,22 @@ namespace sudoku
             cells[lastFocused[0], lastFocused[1]].Focus();
         }
 
+        private void DisplayLeaderboard()
+        {
+
+            lbLeaderboard.Text = "Tableau des scores (" + difficulty + ") :";
+            lbLeaderboard.Visible = true;
+            LoadLeaderboard();
+            listLeaderboard.Visible = true;
+        }
+
         private void InitializeStart()
         {
             panelGrille.Controls.Clear();
             clbNote.Visible = false;
             fullCells = 81;
             nbHelp = 0;
+
             difficulty = Difficulty.None;
             if (this.rbtnEasy.Checked)
                 difficulty = Difficulty.Facile;
@@ -306,10 +316,7 @@ namespace sudoku
             else if (this.rbtnHard.Checked)
                 difficulty = Difficulty.Difficile;
 
-            lbLeaderboard.Text = "Tableau des scores (" + difficulty + ") :";
-            lbLeaderboard.Visible = true;
-            LoadLeaderboard();
-            listLeaderboard.Visible = true;
+            DisplayLeaderboard();
 
             cells = new SudokuCell[9, 9];
             createCells();
@@ -361,14 +368,14 @@ namespace sudoku
                 cells[x, y].Help();
 
                 // Ajouter du temps si utilisation de l'aide
-                AddToTime((int)Math.Min(Math.Pow(2, nbHelp), 300));
+                AddToTime((int)Math.Min(Math.Pow((2+(int)difficulty), nbHelp), 300 * (1f + (int)difficulty / 2f)));
                 nbHelp++;
             }
             else
             {
                 MessageBox.Show("Aide non disponible pour la dernière case.");
             }
-            btnHelp.Text = "Aide (+" + (int)Math.Min(Math.Pow(2, nbHelp), 300) + "s)";
+            btnHelp.Text = "Aide (+" + (int)Math.Min(Math.Pow((2 + (int)difficulty), nbHelp), 300 * (1f + (int)difficulty / 2f)) + "s)";
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -423,7 +430,7 @@ namespace sudoku
 
         private void serializeGame()
         {
-            SaveGame save = new SaveGame(cells, fullCells, time, nbHelp);
+            SaveGame save = new SaveGame(cells, fullCells, time, nbHelp, difficulty);
             string fileName = @"..\..\..\Data\save.json";
             string jsonString = JsonSerializer.Serialize(save);
             File.WriteAllText(fileName, jsonString);
@@ -439,6 +446,7 @@ namespace sudoku
             this.fullCells = save.fullCells;
             this.cells = loadCells(save);
             this.lastFocused = new int[2] { 0, 0 };
+            this.difficulty = save.difficulty;
         }
 
         private int getNbFullCellsOldGame() 
@@ -521,8 +529,16 @@ namespace sudoku
 
             deserializeGame();
 
+            DisplayLeaderboard();
+            if (this.difficulty == Difficulty.Facile)
+                rbtnEasy.Checked = true;
+            else if (this.difficulty == Difficulty.Moyen)
+                rbtnMedium.Checked = true;
+            else if (this.difficulty == Difficulty.Difficile)
+                rbtnHard.Checked = true;
+
             clbNote.Visible = false;
-            btnHelp.Text = "Aide (+" + (int)Math.Min(Math.Pow(2, nbHelp), 300) + "s)";
+            btnHelp.Text = "Aide (+" + (int)Math.Min(Math.Pow((2 + (int)difficulty), nbHelp), 300 * (1f + (int)difficulty / 2f)) +"s)";
 
             timer.Start();
         }

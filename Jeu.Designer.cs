@@ -54,15 +54,6 @@
             this.panelGrille.Size = new System.Drawing.Size(450, 450);
             this.panelGrille.TabIndex = 0;
             // 
-            // btnContinue
-            // 
-            this.btnContinue.Enabled = false;
-            this.btnContinue.Location = new System.Drawing.Point(265, 256);
-            this.btnContinue.Name = "btnContinue";
-            this.btnContinue.Size = new System.Drawing.Size(75, 23);
-            this.btnContinue.TabIndex = 0;
-            this.btnContinue.Visible = false;
-            // 
             // btnStart
             // 
             this.btnStart.Location = new System.Drawing.Point(101, 253);
@@ -92,6 +83,7 @@
             this.clbNote.Location = new System.Drawing.Point(130, 50);
             this.clbNote.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.clbNote.Name = "clbNote";
+            this.clbNote.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.clbNote.Size = new System.Drawing.Size(49, 198);
             this.clbNote.Sorted = true;
             this.clbNote.TabIndex = 1;
@@ -147,11 +139,11 @@
             "2",
             "3",
             "4"});
-            this.listLeaderboard.Location = new System.Drawing.Point(706, 68);
+            this.listLeaderboard.Location = new System.Drawing.Point(682, 61);
             this.listLeaderboard.Name = "listLeaderboard";
             this.listLeaderboard.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.listLeaderboard.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.listLeaderboard.Size = new System.Drawing.Size(150, 420);
+            this.listLeaderboard.Size = new System.Drawing.Size(210, 420);
             this.listLeaderboard.TabIndex = 6;
             this.listLeaderboard.TabStop = false;
             // 
