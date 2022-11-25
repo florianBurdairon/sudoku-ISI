@@ -32,9 +32,9 @@ namespace sudoku
             scores.Sort();
         }
 
-        public void AddScore(string username, int time, int nbHelp)
+        public void AddScore(string username, int time, int nbHelp, Difficulty difficulty)
         {
-            Score score = new Score(username, time, nbHelp);
+            Score score = new Score(username, time, nbHelp, difficulty);
             AddScore(score);
         }
 
@@ -46,6 +46,17 @@ namespace sudoku
         public List<Score> GetLeaderboard()
         {
             return scores;
+        }
+
+        public List<Score> GetLeaderboardWith(Difficulty difficulty)
+        {
+            List<Score> ret = new List<Score>();
+
+            for (int i = 0; i < scores.Count; i++)
+                if (scores[i].difficulty == difficulty)
+                    ret.Add(scores[i]);
+
+            return ret;
         }
     }
 }

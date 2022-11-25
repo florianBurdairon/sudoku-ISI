@@ -3,6 +3,14 @@ using System.Xml.Linq;
 
 namespace sudoku
 {
+    public enum Difficulty
+    {
+        Facile,
+        Moyen,
+        Difficile,
+        None
+    }
+
     public partial class Jeu : Form
     {
         private SudokuCell[,] cells = new SudokuCell[9, 9];
@@ -11,10 +19,14 @@ namespace sudoku
         public int time {get; private set;}
         public int nbHelp { get; private set; }
         private Leaderboard leaderboard;
+        private Difficulty difficulty = Difficulty.None;
 
         public Jeu()
         {
             InitializeComponent();
+
+            lbLeaderboard.Visible = false;
+            listLeaderboard.Visible = false;
 
 
             // 
@@ -251,7 +263,7 @@ namespace sudoku
 
         public void SaveScore(string username = "Guest")
         {
-            leaderboard.AddScore(username, time, nbHelp);
+            leaderboard.AddScore(username, time, nbHelp, difficulty);
             string fileName = @"..\..\..\Data\leaderboard.json";
             string jsonString = JsonSerializer.Serialize(leaderboard);
             File.WriteAllText(fileName, jsonString);
@@ -270,13 +282,25 @@ namespace sudoku
             clbNote.Visible = false;
             fullCells = 81;
             nbHelp = 0;
+            difficulty = Difficulty.None;
+            if (this.rbtnEasy.Checked)
+                difficulty = Difficulty.Facile;
+            else if (this.rbtnMedium.Checked)
+                difficulty = Difficulty.Moyen;
+            else if (this.rbtnHard.Checked)
+                difficulty = Difficulty.Difficile;
+
+            lbLeaderboard.Text = "Tableau des scores (" + difficulty + ") :";
+            lbLeaderboard.Visible = true;
+            LoadLeaderboard();
+            listLeaderboard.Visible = true;
 
             cells = new SudokuCell[9, 9];
             createCells();
 
             Grille grid = new Grille();
             fillGrid(grid);
-            removeCell(grid.RemoveCellsHard());
+            removeCell(grid.RemoveCellsHard(difficulty));
 
             btnHelp.Text = "Aide (+1s)";
 
@@ -366,10 +390,13 @@ namespace sudoku
         private void LoadLeaderboard()
         {
             listLeaderboard.Items.Clear();
-            List<Score> lb = leaderboard.GetLeaderboard();
-            for (int i = 0; i < lb.Count; i++)
+            if (difficulty != Difficulty.None)
             {
-                listLeaderboard.Items.Add(lb[i].ToString());
+                List<Score> lb = leaderboard.GetLeaderboardWith(difficulty);
+                for (int i = 0; i < lb.Count; i++)
+                {
+                    listLeaderboard.Items.Add(lb[i].ToString());
+                }
             }
         }
 
