@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panelGrille = new System.Windows.Forms.Panel();
-            this.btnContinue = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.clbNote = new System.Windows.Forms.CheckedListBox();
             this.btnHelp = new System.Windows.Forms.Button();
@@ -43,7 +42,6 @@
             // 
             // panelGrille
             // 
-            this.panelGrille.Controls.Add(this.btnContinue);
             this.panelGrille.Controls.Add(this.btnStart);
             this.panelGrille.Location = new System.Drawing.Point(206, 38);
             this.panelGrille.Name = "panelGrille";
@@ -171,6 +169,6 @@
         private System.Windows.Forms.Timer timer;
         private Label lbTime;
         private ListBox listLeaderboard;
-        private Button btnContinue;
+        private Button btnContinue = null;
     }
 }
