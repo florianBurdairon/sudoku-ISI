@@ -11,22 +11,38 @@ namespace sudoku
         public int time {get; private set;}
         public int nbHelp { get; private set; }
         private Leaderboard leaderboard;
+        private bool gameRunning = false;
+        private bool existOldGame;
 
         public Jeu()
         {
             InitializeComponent();
 
+            try
+            {
+                int nbFullCells = getNbFullCellsOldGame();
 
-            // 
-            // btnContinue
-            // 
-            this.btnContinue.Location = new System.Drawing.Point(277, 253);
-            this.btnContinue.Name = "btnContinue";
-            this.btnContinue.Size = new System.Drawing.Size(128, 29);
-            this.btnContinue.TabIndex = 3;
-            this.btnContinue.Text = "Reprendre la partie";
-            this.btnContinue.UseVisualStyleBackColor = true;
-            this.btnContinue.Click += new System.EventHandler(this.btnContinue_Click);
+                if(nbFullCells < 81)
+                {
+                    existOldGame = true;
+                    // 
+                    // btnContinue
+                    // 
+                    this.btnContinue = new Button();
+                    this.panelGrille.Controls.Add(this.btnContinue);
+                    this.btnContinue.Location = new System.Drawing.Point(277, 253);
+                    this.btnContinue.Name = "btnContinue";
+                    this.btnContinue.Size = new System.Drawing.Size(128, 29);
+                    this.btnContinue.TabIndex = 3;
+                    this.btnContinue.Text = "Reprendre la partie";
+                    this.btnContinue.UseVisualStyleBackColor = true;
+                    this.btnContinue.Click += new System.EventHandler(this.btnContinue_Click);
+                }
+            }
+            catch(Exception e)
+            {
+                existOldGame = false;
+            }
 
             try
             {
@@ -289,15 +305,20 @@ namespace sudoku
             InitializeStart();
 
             btnStart.Visible = false;
-            btnContinue.Visible = false;
+            if(existOldGame)
+                btnContinue.Visible = false;
             lbTime.Visible = true;
             btnRestart.Visible = true;
             btnHelp.Visible = true;
+
+            gameRunning = true;
         }
 
         private void btnRestart_Click(object sender, EventArgs e)
         {
             InitializeStart();
+
+            gameRunning = true;
         }
 
         private void btnHelp_Click(object sender, EventArgs e)
@@ -393,6 +414,21 @@ namespace sudoku
             this.lastFocused = new int[2] { 0, 0 };
         }
 
+        private int getNbFullCellsOldGame() 
+        {
+            try
+            {
+                string jsonString = File.ReadAllText(@"..\..\..\Data\save.json");
+                SaveGame? save = JsonSerializer.Deserialize<SaveGame>(jsonString);
+                return save.fullCells;
+            }
+            catch(Exception e)
+            {
+                throw e;
+                return -1;
+            }
+        }
+
         private SudokuCell[,] loadCells(SaveGame save)
         {
             SudokuCell[,] grid = new SudokuCell[9, 9];
@@ -438,7 +474,8 @@ namespace sudoku
 
         private void Jeu_FormClosed(object sender, FormClosedEventArgs e)
         {
-            serializeGame();
+            if (gameRunning)
+                serializeGame();
         }
 
         private void btnContinue_Click(object sender, EventArgs e)
@@ -448,6 +485,8 @@ namespace sudoku
             lbTime.Visible = true;
             btnRestart.Visible = true;
             btnHelp.Visible = true;
+
+            gameRunning = true;
 
             panelGrille.Controls.Clear();
                         
