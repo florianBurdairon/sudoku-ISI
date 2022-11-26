@@ -397,7 +397,7 @@ namespace sudoku
             else
                 time = 0;
 
-            lbTime.Text = "Time : ";
+            lbTime.Text = "Temps : ";
             if (time / 3600 > 0)
             {
                 lbTime.Text += (time / 3600).ToString() + ":";

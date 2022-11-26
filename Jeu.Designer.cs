@@ -125,7 +125,7 @@
             this.lbTime.Name = "lbTime";
             this.lbTime.Size = new System.Drawing.Size(53, 20);
             this.lbTime.TabIndex = 5;
-            this.lbTime.Text = "Time : ";
+            this.lbTime.Text = "Temps : ";
             this.lbTime.Visible = false;
             // 
             // listLeaderboard
