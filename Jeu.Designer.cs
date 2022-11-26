@@ -42,8 +42,11 @@
             this.rbtnHard = new System.Windows.Forms.RadioButton();
             this.groupRBtn = new System.Windows.Forms.GroupBox();
             this.lbLeaderboard = new System.Windows.Forms.Label();
+            this.lbLeftNumbers = new System.Windows.Forms.ListBox();
+            this.groupLeftNumbers = new System.Windows.Forms.GroupBox();
             this.panelGrille.SuspendLayout();
             this.groupRBtn.SuspendLayout();
+            this.groupLeftNumbers.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelGrille
@@ -80,7 +83,7 @@
             "7",
             "8",
             "9"});
-            this.clbNote.Location = new System.Drawing.Point(130, 50);
+            this.clbNote.Location = new System.Drawing.Point(139, 46);
             this.clbNote.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.clbNote.Name = "clbNote";
             this.clbNote.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -200,10 +203,42 @@
             this.lbLeaderboard.TabIndex = 11;
             this.lbLeaderboard.Text = "Tableau des scores :";
             // 
+            // lbLeftNumbers
+            // 
+            this.lbLeftNumbers.BackColor = System.Drawing.SystemColors.Control;
+            this.lbLeftNumbers.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lbLeftNumbers.FormattingEnabled = true;
+            this.lbLeftNumbers.ItemHeight = 20;
+            this.lbLeftNumbers.Items.AddRange(new object[] {
+            "1 : ",
+            "2 :",
+            "3 : ",
+            "4 :",
+            "5 :",
+            "6 :",
+            "7 :",
+            "8 :",
+            "9 :"});
+            this.lbLeftNumbers.Location = new System.Drawing.Point(9, 45);
+            this.lbLeftNumbers.Name = "lbLeftNumbers";
+            this.lbLeftNumbers.Size = new System.Drawing.Size(77, 180);
+            this.lbLeftNumbers.TabIndex = 12;
+            // 
+            // groupLeftNumbers
+            // 
+            this.groupLeftNumbers.Controls.Add(this.lbLeftNumbers);
+            this.groupLeftNumbers.Location = new System.Drawing.Point(48, 16);
+            this.groupLeftNumbers.Name = "groupLeftNumbers";
+            this.groupLeftNumbers.Size = new System.Drawing.Size(88, 238);
+            this.groupLeftNumbers.TabIndex = 13;
+            this.groupLeftNumbers.TabStop = false;
+            this.groupLeftNumbers.Text = "Nombres restants :";
+            // 
             // Jeu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(921, 595);
+            this.Controls.Add(this.groupLeftNumbers);
             this.Controls.Add(this.lbLeaderboard);
             this.Controls.Add(this.groupRBtn);
             this.Controls.Add(this.listLeaderboard);
@@ -218,6 +253,7 @@
             this.panelGrille.ResumeLayout(false);
             this.groupRBtn.ResumeLayout(false);
             this.groupRBtn.PerformLayout();
+            this.groupLeftNumbers.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -239,5 +275,7 @@
         private RadioButton rbtnMedium;
         private RadioButton rbtnHard;
         private Label lbLeaderboard;
+        private ListBox lbLeftNumbers;
+        private GroupBox groupLeftNumbers;
     }
 }
