@@ -14,6 +14,7 @@ namespace sudoku
     public partial class Jeu : Form
     {
         private SudokuCell[,] cells = new SudokuCell[9, 9];
+        private List<SudokuCell> wrongCells = new List<SudokuCell>();
         private int fullCells = 81;
         private int[] lastFocused = new int[2];
         public int time {get; private set;}
@@ -186,9 +187,17 @@ namespace sudoku
 
             if (e.KeyCode == Keys.D0 || e.KeyCode == Keys.NumPad0 || e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
             {
-                if (cell.Value != 0)
+                string poss = Grille.GetPossibleValues(getGridAsArray(), cell.X, cell.Y);
+                bool isPoss = false;
+                foreach (char c in poss)
+                    if (c - '0' == cell.Value)
+                        isPoss = true;
+                if (isPoss)
                     fullCells -= 1;
+                else
+                    wrongCells.Remove(cell);
                 cell.Clear();
+                checkAllWrongCells();
             }
 
             // Add the pressed key value in the cell only if it is a number
@@ -204,22 +213,51 @@ namespace sudoku
                         isPoss = true;
                 if (isPoss)
                 {
-                    if (cell.ForeColor == Color.Red || cell.Value == 0)
-                        fullCells += 1;
                     cell.SetIsGood(true);
+                    cell.SetValue(value);
+
+                    if (cell.ForeColor == Color.Red) fullCells += 1;
+                    else if (cell.Value== 0) fullCells += 1;
                 }
                 else
                 {
-                    if (cell.ForeColor == Color.Black || cell.Value == 0)
-                        fullCells -= 1;
                     cell.SetIsGood(false);
+                    cell.SetValue(value);
+
+                    if (cell.ForeColor == Color.Black || cell.Value == 0)
+                    {
+                        fullCells -= 1;
+                        wrongCells.Add(cell);
+                    }                    
                 }
-                cell.SetValue(value);
+                checkAllWrongCells();
             }
 
             if (fullCells == 81)
             {
                 Victory();
+            }
+        }
+
+        private void checkAllWrongCells()
+        {
+            List<SudokuCell> correctCells = new List<SudokuCell>();
+            foreach(SudokuCell cell in wrongCells)
+            {
+                string poss = Grille.GetPossibleValues(getGridAsArray(), cell.X, cell.Y);
+                bool isPoss = false;
+                foreach (char c in poss)
+                    if (c - '0' == cell.Value)
+                        isPoss = true;
+                cell.SetIsGood(isPoss);
+                if(isPoss) { 
+                    fullCells+= 1;
+                    correctCells.Add(cell);
+                }
+            }
+            foreach(SudokuCell cell in correctCells)
+            {
+                wrongCells.Remove(cell);
             }
         }
 
