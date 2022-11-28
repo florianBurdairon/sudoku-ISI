@@ -467,20 +467,28 @@ namespace sudoku
         {
             if (fullCells < 80) // impossible d'avoir de l'aide pour la dernière case
             {
-                fullCells++;
-                int x;
-                int y;
-                do
+                List<SudokuCell> emptyCells = new List<SudokuCell>();
+
+                for (int x = 0; x < 9; x++)
+                    for (int y = 0; y < 9; y++)
+                        if (!cells[x, y].IsLocked && cells[x, y].Value == 0)
+                            emptyCells.Add(cells[x, y]);
+
+                if (emptyCells.Count > 0)
                 {
-                    x = Random.Shared.Next(9);
-                    y = Random.Shared.Next(9);
-                } while (cells[x, y].IsLocked || cells[x, y].Value != 0);
+                    int randInd = Random.Shared.Next(emptyCells.Count);
 
-                cells[x, y].Help();
+                    cells[emptyCells[randInd].X, emptyCells[randInd].Y].Help();
+                    fullCells++;
 
-                // Ajouter du temps si utilisation de l'aide
-                AddToTime((int)Math.Min(Math.Pow((2+(int)difficulty), nbHelp), 300 * (1f + (int)difficulty / 2f)));
-                nbHelp++;
+                    // Ajouter du temps si utilisation de l'aide
+                    AddToTime((int)Math.Min(Math.Pow((2 + (int)difficulty), nbHelp), 300 * (1f + (int)difficulty / 2f)));
+                    nbHelp++;
+                }
+                else
+                {
+                    MessageBox.Show("Il n'existe aucune case où l'aide peut être utilisée");
+                }
             }
             else
             {
