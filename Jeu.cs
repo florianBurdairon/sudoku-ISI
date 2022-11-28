@@ -253,7 +253,7 @@ namespace sudoku
         private void checkAllWrongCells()
         {
             List<SudokuCell> correctCells = new List<SudokuCell>();
-            foreach(SudokuCell cell in wrongCells)
+            foreach (SudokuCell cell in wrongCells)
             {
                 string poss = Grille.GetPossibleValues(getGridAsArray(), cell.X, cell.Y);
                 bool isPoss = false;
@@ -261,8 +261,9 @@ namespace sudoku
                     if (c - '0' == cell.Value)
                         isPoss = true;
                 cell.SetIsGood(isPoss);
-                if(isPoss) { 
-                    fullCells+= 1;
+                if (isPoss)
+                {
+                    fullCells += 1;
                     correctCells.Add(cell);
                 }
             }
@@ -280,46 +281,56 @@ namespace sudoku
                 {
                     if (!(cell.X == i && cell.Y == j))
                     {
-                        if (i == cell.X)
+                        if (!cells[i, j].IsLocked && cells[i, j].Value != 0) // Ne pas compter les cases locked + les non-remplis
                         {
-                            string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
-                            bool isPoss = false;
-                            foreach (char c in poss)
-                                if (c - '0' == cell.Value)
-                                    isPoss = true;
-                            cell.SetIsGood(isPoss);
-                            if (!isPoss)
+                            bool alreadyIn = false; // Vérifier que la case n'est pas 2 fois dedans
+                            foreach(SudokuCell c in wrongCells)
+                                if (c.X == i && c.Y == j)
+                                    alreadyIn = true;
+                            if (!alreadyIn)
                             {
-                                fullCells -= 1;
-                                wrongCells.Add(cell);
-                            }
-                        }
-                        else if (j == cell.Y)
-                        {
-                            string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
-                            bool isPoss = false;
-                            foreach (char c in poss)
-                                if (c - '0' == cell.Value)
-                                    isPoss = true;
-                            cell.SetIsGood(isPoss);
-                            if (!isPoss)
-                            {
-                                fullCells -= 1;
-                                wrongCells.Add(cell);
-                            }
-                        }
-                        else if (i / 3 == cell.X / 3 && j / 3 == cell.Y / 3)
-                        {
-                            string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
-                            bool isPoss = false;
-                            foreach (char c in poss)
-                                if (c - '0' == cell.Value)
-                                    isPoss = true;
-                            cell.SetIsGood(isPoss);
-                            if (!isPoss)
-                            {
-                                fullCells -= 1;
-                                wrongCells.Add(cell);
+                                if (i == cell.X)
+                                {
+                                    string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
+                                    bool isPoss = false;
+                                    foreach (char c in poss)
+                                        if (c - '0' == cell.Value)
+                                            isPoss = true;
+                                    cells[i, j].SetIsGood(isPoss);
+                                    if (!isPoss)
+                                    {
+                                        fullCells -= 1;
+                                        wrongCells.Add(cells[i, j]);
+                                    }
+                                }
+                                else if (j == cell.Y)
+                                {
+                                    string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
+                                    bool isPoss = false;
+                                    foreach (char c in poss)
+                                        if (c - '0' == cell.Value)
+                                            isPoss = true;
+                                    cells[i, j].SetIsGood(isPoss);
+                                    if (!isPoss)
+                                    {
+                                        fullCells -= 1;
+                                        wrongCells.Add(cells[i, j]);
+                                    }
+                                }
+                                else if (i / 3 == cell.X / 3 && j / 3 == cell.Y / 3)
+                                {
+                                    string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
+                                    bool isPoss = false;
+                                    foreach (char c in poss)
+                                        if (c - '0' == cell.Value)
+                                            isPoss = true;
+                                    cells[i, j].SetIsGood(isPoss);
+                                    if (!isPoss)
+                                    {
+                                        fullCells -= 1;
+                                        wrongCells.Add(cells[i, j]);
+                                    }
+                                }
                             }
                         }
                     }
@@ -418,6 +429,7 @@ namespace sudoku
             clbNote.Visible = false;
             fullCells = 81;
             nbHelp = 0;
+            wrongCells.Clear();
 
             difficulty = Difficulty.None;
             if (this.rbtnEasy.Checked)
@@ -521,7 +533,7 @@ namespace sudoku
             if (s.Length == 1)
                 s = "0" + s;
 
-            lbTime.Text += m + ":" + s; 
+            lbTime.Text += m + ":" + s + " -> " + fullCells.ToString() + " : " + wrongCells.Count.ToString(); 
         }
 
         private string GetPossibleValues(SudokuCell[,] grid, int x, int y, string alreadyUsed = "")
