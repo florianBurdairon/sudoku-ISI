@@ -125,12 +125,14 @@
         }
 
         // Permet de définir les annotations grâce à un string
-        private void SetNoteFromString(string note)
+        public void SetNoteFromString(string note)
         {
+            this.Note = new bool[] { false, false, false, false, false, false, false, false, false };
             foreach(char c in note)
             {
                 this.Note[c - '1'] = true;
             }
+            SetTextAsNote(this.Value == 0);
         }
 
         // Retourne l'ensemble des annotations sous forme de string

@@ -24,15 +24,18 @@ namespace sudoku
         private bool gameRunning = false;
         private bool existOldGame;
 
+        private bool showBlueLines = true;
+
         private int[] leftNumbers = new int[9];
 
         public Jeu()
         {
             InitializeComponent();
 
-            lbLeaderboard.Visible = false;
-            listLeaderboard.Visible = false;
+            gbLeaderboard.Visible = false;
+            //listLeaderboard.Visible = false;
             groupLeftNumbers.Visible = false;
+            cbBlueLines.Visible = false;
 
             try
             {
@@ -46,10 +49,10 @@ namespace sudoku
                     // 
                     this.btnContinue = new Button();
                     this.panelGrille.Controls.Add(this.btnContinue);
-                    this.btnContinue.Location = new System.Drawing.Point(277, 253);
+                    this.btnContinue.Location = new System.Drawing.Point(264, 183);
                     this.btnContinue.Name = "btnContinue";
-                    this.btnContinue.Size = new System.Drawing.Size(128, 29);
-                    this.btnContinue.TabIndex = 3;
+                    this.btnContinue.Size = new System.Drawing.Size(128, 55);
+                    this.btnContinue.TabStop = false;
                     this.btnContinue.Text = "Reprendre la partie";
                     this.btnContinue.UseVisualStyleBackColor = true;
                     this.btnContinue.Click += new System.EventHandler(this.btnContinue_Click);
@@ -136,7 +139,7 @@ namespace sudoku
                     // Create 81 cells for with styles and locations based on the index
                     cells[i, j] = new SudokuCell();
                     cells[i, j].Location = new Point(i * cells[i, j].Size.Width, j * cells[i, j].Size.Height);
-                    cells[i, j].BackColor = ((i / 3) + (j / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
+                    cells[i, j].BackColor = ((i / 3) + (j / 3)) % 2 == 0 ? SystemColors.Control : Color.FromArgb(220, 220, 220);
                     cells[i, j].X = i;
                     cells[i, j].Y = j;
 
@@ -188,7 +191,10 @@ namespace sudoku
             if (!gameRunning)
                 return;
 
-            var cell = sender as SudokuCell;
+            SudokuCell? cell = sender as SudokuCell;
+
+            if (cell == null)
+                return;
 
             if (cell.IsLocked)
                 return;
@@ -203,6 +209,17 @@ namespace sudoku
 
             if (e.KeyCode == Keys.D0 || e.KeyCode == Keys.NumPad0 || e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
             {
+                if (cell.Value == 0) // Si la case est vide
+                {
+                    if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete) // Et qu'on veut supprimer les annotations
+                    {
+                        cell.SetNoteFromString("");
+                        for (int i = 0; i < 9; i++)
+                        {
+                            clbNote.SetItemChecked(i, cell.GetNote()[i]);
+                        }
+                    }
+                }
                 if (isOldCorrect)
                 {
                     fullCells -= 1;
@@ -359,32 +376,16 @@ namespace sudoku
                 if (clbNote != null)
                 {
                     if (cell.IsLocked)
-                        clbNote.Visible = false;
+                        gbNotes.Visible = false;
                     else
-                        clbNote.Visible = true;
+                        gbNotes.Visible = true;
                     for (int i = 0; i < 9; i++)
                     {
                         clbNote.SetItemChecked(i, cell.GetNote()[i]);
                     }
                 }
 
-                // Changer la couleur de la ligne, colonne et carré qui impacte la case
-                for (int x = 0; x < 9; x++)
-                    for (int y = 0; y < 9; y++)
-                    {
-                        Color c = ((x / 3) + (y / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
-                        Color col = Color.FromArgb((int)(0.5f * c.R + 0.5f * 210f), (int)(0.5f * c.G + 0.5f * 210f), 255);
-                        if (lastFocused[0] == x && lastFocused[1] == y)
-                            cells[x, y].BackColor = ((x / 3) + (y / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
-                        else if (lastFocused[0] == x)
-                            cells[x, y].BackColor = col;
-                        else if (lastFocused[1] == y)
-                            cells[x, y].BackColor = col;
-                        else if (lastFocused[0] / 3 == x / 3 && lastFocused[1] / 3 == y / 3)
-                            cells[x, y].BackColor = col;
-                        else
-                            cells[x, y].BackColor = ((x / 3) + (y / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
-                    }
+                DrawBlueLines();
             }
         }
 
@@ -428,8 +429,8 @@ namespace sudoku
         private void DisplayLeaderboard()
         {
 
-            lbLeaderboard.Text = "Tableau des scores (" + difficulty + ") :";
-            lbLeaderboard.Visible = true;
+            gbLeaderboard.Text = "Tableau des scores (" + difficulty + ") :";
+            gbLeaderboard.Visible = true;
             LoadLeaderboard();
             listLeaderboard.Visible = true;
         }
@@ -437,7 +438,7 @@ namespace sudoku
         private void InitializeStart()
         {
             panelGrille.Controls.Clear();
-            clbNote.Visible = false;
+            gbNotes.Visible = false;
             fullCells = 81;
             nbHelp = 0;
             wrongCells.Clear();
@@ -478,6 +479,7 @@ namespace sudoku
             btnRestart.Visible = true;
             btnHelp.Visible = true;
             groupLeftNumbers.Visible = true;
+            cbBlueLines.Visible = true;
 
             gameRunning = true;
         }
@@ -646,7 +648,7 @@ namespace sudoku
                 {
                     grid[i, j] = new SudokuCell();
                     grid[i, j].Location = new Point(i * grid[i, j].Size.Width, j * grid[i, j].Size.Height);
-                    grid[i, j].BackColor = ((i / 3) + (j / 3)) % 2 == 0 ? SystemColors.Control : Color.LightGray;
+                    grid[i, j].BackColor = ((i / 3) + (j / 3)) % 2 == 0 ? SystemColors.Control : Color.FromArgb(220, 220, 220);
                     grid[i, j].X = save.grid[i * 9 + j].X;
                     grid[i, j].Y = save.grid[i * 9 + j].Y;
                     grid[i, j].SetOriginalValue(save.grid[i * 9 + j].OriginalValue);
@@ -693,6 +695,7 @@ namespace sudoku
             btnRestart.Visible = true;
             btnHelp.Visible = true;
             groupLeftNumbers.Visible = true;
+            cbBlueLines.Visible = true;
 
             gameRunning = true;
 
@@ -712,10 +715,55 @@ namespace sudoku
 
             CalculateLeftNumbers();
 
-            clbNote.Visible = false;
+            gbNotes.Visible = false;
             btnHelp.Text = "Aide (+" + (int)Math.Min(Math.Pow((2 + (int)difficulty), nbHelp), 300 * (1f + (int)difficulty / 2f)) +"s)";
 
             timer.Start();
+        }
+
+        private void DrawBlueLines()
+        {
+            if (showBlueLines)
+            {
+                // Changer la couleur de la ligne, colonne et carré qui impacte la case
+                for (int x = 0; x < 9; x++)
+                    for (int y = 0; y < 9; y++)
+                    {
+                        Color c = ((x / 3) + (y / 3)) % 2 == 0 ? SystemColors.Control : Color.FromArgb(220, 220, 220);
+                        //Color col = Color.FromArgb((int)(0.5f * c.R + 0.5f * 210f), (int)(0.5f * c.G + 0.5f * 210f), 255);
+                        Color col = Color.FromArgb(c.R, c.G, 255);
+                        if (lastFocused[0] == x && lastFocused[1] == y)
+                            cells[x, y].BackColor = c;
+                        else if (lastFocused[0] == x)
+                            cells[x, y].BackColor = col;
+                        else if (lastFocused[1] == y)
+                            cells[x, y].BackColor = col;
+                        else if (lastFocused[0] / 3 == x / 3 && lastFocused[1] / 3 == y / 3)
+                            cells[x, y].BackColor = col;
+                        else
+                            cells[x, y].BackColor = c;
+                    }
+            }
+            else
+            {
+                // Remettre à zéro la couleur de la ligne, colonne et carré qui impacte la case
+                for (int x = 0; x < 9; x++)
+                    for (int y = 0; y < 9; y++)
+                    {
+                        cells[x, y].BackColor = ((x / 3) + (y / 3)) % 2 == 0 ? SystemColors.Control : Color.FromArgb(220, 220, 220);
+                    }
+            }
+        }
+
+        private void cbBlueLines_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox? cb = sender as CheckBox;
+            if (cb != null)
+            {
+                showBlueLines = cb.Checked;
+                DrawBlueLines();
+                cells[lastFocused[0], lastFocused[1]].Focus();
+            }
         }
     }
 }
