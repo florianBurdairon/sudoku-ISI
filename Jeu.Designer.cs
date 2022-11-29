@@ -126,7 +126,7 @@
             this.lbTime.AutoSize = true;
             this.lbTime.Location = new System.Drawing.Point(393, 539);
             this.lbTime.Name = "lbTime";
-            this.lbTime.Size = new System.Drawing.Size(63, 20);
+            this.lbTime.Size = new System.Drawing.Size(50, 15);
             this.lbTime.TabIndex = 5;
             this.lbTime.Text = "Temps : ";
             this.lbTime.Visible = false;
@@ -136,7 +136,7 @@
             this.listLeaderboard.BackColor = System.Drawing.SystemColors.Control;
             this.listLeaderboard.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listLeaderboard.FormattingEnabled = true;
-            this.listLeaderboard.ItemHeight = 20;
+            this.listLeaderboard.ItemHeight = 15;
             this.listLeaderboard.Items.AddRange(new object[] {
             "1",
             "2",
@@ -155,7 +155,7 @@
             this.rbtnEasy.AutoSize = true;
             this.rbtnEasy.Location = new System.Drawing.Point(48, 51);
             this.rbtnEasy.Name = "rbtnEasy";
-            this.rbtnEasy.Size = new System.Drawing.Size(67, 24);
+            this.rbtnEasy.Size = new System.Drawing.Size(55, 19);
             this.rbtnEasy.TabIndex = 7;
             this.rbtnEasy.Text = "Facile";
             this.rbtnEasy.UseVisualStyleBackColor = true;
@@ -166,7 +166,7 @@
             this.rbtnMedium.Checked = true;
             this.rbtnMedium.Location = new System.Drawing.Point(45, 81);
             this.rbtnMedium.Name = "rbtnMedium";
-            this.rbtnMedium.Size = new System.Drawing.Size(75, 24);
+            this.rbtnMedium.Size = new System.Drawing.Size(62, 19);
             this.rbtnMedium.TabIndex = 8;
             this.rbtnMedium.TabStop = true;
             this.rbtnMedium.Text = "Moyen";
@@ -177,7 +177,7 @@
             this.rbtnHard.AutoSize = true;
             this.rbtnHard.Location = new System.Drawing.Point(42, 111);
             this.rbtnHard.Name = "rbtnHard";
-            this.rbtnHard.Size = new System.Drawing.Size(82, 24);
+            this.rbtnHard.Size = new System.Drawing.Size(65, 19);
             this.rbtnHard.TabIndex = 9;
             this.rbtnHard.Text = "Difficile";
             this.rbtnHard.UseVisualStyleBackColor = true;
@@ -199,7 +199,7 @@
             this.lbLeaderboard.AutoSize = true;
             this.lbLeaderboard.Location = new System.Drawing.Point(682, 38);
             this.lbLeaderboard.Name = "lbLeaderboard";
-            this.lbLeaderboard.Size = new System.Drawing.Size(139, 20);
+            this.lbLeaderboard.Size = new System.Drawing.Size(110, 15);
             this.lbLeaderboard.TabIndex = 11;
             this.lbLeaderboard.Text = "Tableau des scores :";
             // 
@@ -208,7 +208,7 @@
             this.lbLeftNumbers.BackColor = System.Drawing.SystemColors.Control;
             this.lbLeftNumbers.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lbLeftNumbers.FormattingEnabled = true;
-            this.lbLeftNumbers.ItemHeight = 20;
+            this.lbLeftNumbers.ItemHeight = 15;
             this.lbLeftNumbers.Items.AddRange(new object[] {
             "1 : ",
             "2 :",
@@ -237,7 +237,7 @@
             // Jeu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(921, 595);
+            this.ClientSize = new System.Drawing.Size(923, 591);
             this.Controls.Add(this.groupLeftNumbers);
             this.Controls.Add(this.lbLeaderboard);
             this.Controls.Add(this.groupRBtn);
@@ -247,7 +247,10 @@
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.clbNote);
             this.Controls.Add(this.panelGrille);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(939, 630);
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(939, 630);
             this.Name = "Jeu";
             this.Text = "Sudoku";
