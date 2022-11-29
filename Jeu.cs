@@ -24,12 +24,15 @@ namespace sudoku
         private bool gameRunning = false;
         private bool existOldGame;
 
+        private int[] leftNumbers = new int[9];
+
         public Jeu()
         {
             InitializeComponent();
 
             lbLeaderboard.Visible = false;
             listLeaderboard.Visible = false;
+            groupLeftNumbers.Visible = false;
 
             try
             {
@@ -240,6 +243,8 @@ namespace sudoku
                     wrongCells.Add(cell);
                     checkConflictCell(cell);
                 }
+                cell.SetValue(value);
+                CalculateLeftNumbers();
             }
 
             checkAllWrongCells();
@@ -448,6 +453,8 @@ namespace sudoku
             fillGrid(grid);
             removeCell(grid.RemoveCellsHard(difficulty));
 
+            CalculateLeftNumbers();
+
             btnHelp.Text = "Aide (+1s)";
 
             AddToTime(0);
@@ -464,6 +471,7 @@ namespace sudoku
             lbTime.Visible = true;
             btnRestart.Visible = true;
             btnHelp.Visible = true;
+            groupLeftNumbers.Visible = true;
 
             gameRunning = true;
         }
@@ -544,6 +552,33 @@ namespace sudoku
                     ints[i, j] = grid[i, j].Value;
 
             return Grille.GetPossibleValues(ints, x, y, alreadyUsed);
+        }
+
+        private void CalculateLeftNumbers()
+        {
+            leftNumbers = new int[] { 9, 9, 9, 9, 9, 9, 9, 9, 9};
+            if (cells != null)
+            {
+                for (int x = 0; x < 9; x++)
+                    for (int y = 0; y < 9; y++)
+                    {
+                        if (cells[x, y] != null)
+                        {
+                            if (cells[x, y].Value != 0)
+                                leftNumbers[cells[x, y].Value - 1]--;
+                        }
+                    }
+                lbLeftNumbers.Items.Clear();
+                for (int i = 0; i < leftNumbers.Length; i++)
+                {
+                    if (leftNumbers[i] > 0)
+                        lbLeftNumbers.Items.Add(leftNumbers[i] + " fois \"" + (i + 1) + "\"");
+                    else if (leftNumbers[i] == 0)
+                        lbLeftNumbers.Items.Add("Aucun \"" + (i + 1) + "\"");
+                    else
+                        lbLeftNumbers.Items.Add("trop de \"" + (i + 1) + "\"");
+                }
+            }
         }
 
         private void LoadLeaderboard()
@@ -651,6 +686,7 @@ namespace sudoku
             lbTime.Visible = true;
             btnRestart.Visible = true;
             btnHelp.Visible = true;
+            groupLeftNumbers.Visible = true;
 
             gameRunning = true;
 
@@ -667,6 +703,8 @@ namespace sudoku
                 rbtnMedium.Checked = true;
             else if (this.difficulty == Difficulty.Difficile)
                 rbtnHard.Checked = true;
+
+            CalculateLeftNumbers();
 
             clbNote.Visible = false;
             btnHelp.Text = "Aide (+" + (int)Math.Min(Math.Pow((2 + (int)difficulty), nbHelp), 300 * (1f + (int)difficulty / 2f)) +"s)";
