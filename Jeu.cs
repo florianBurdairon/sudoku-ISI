@@ -246,9 +246,9 @@ namespace sudoku
                         checkConflictCell(cell);
                     }
                     cell.SetValue(value);
-                    CalculateLeftNumbers();
                 }
 
+                CalculateLeftNumbers();
                 checkAllWrongCells();
 
                 if (fullCells == 81)
