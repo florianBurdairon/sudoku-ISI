@@ -126,9 +126,9 @@
             this.lbTime.AutoSize = true;
             this.lbTime.Location = new System.Drawing.Point(393, 539);
             this.lbTime.Name = "lbTime";
-            this.lbTime.Size = new System.Drawing.Size(53, 20);
+            this.lbTime.Size = new System.Drawing.Size(63, 20);
             this.lbTime.TabIndex = 5;
-            this.lbTime.Text = "Time : ";
+            this.lbTime.Text = "Temps : ";
             this.lbTime.Visible = false;
             // 
             // listLeaderboard
@@ -247,6 +247,8 @@
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.clbNote);
             this.Controls.Add(this.panelGrille);
+            this.MaximumSize = new System.Drawing.Size(939, 630);
+            this.MinimumSize = new System.Drawing.Size(939, 630);
             this.Name = "Jeu";
             this.Text = "Sudoku";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Jeu_FormClosed);
