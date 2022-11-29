@@ -14,6 +14,7 @@ namespace sudoku
     public partial class Jeu : Form
     {
         private SudokuCell[,] cells = new SudokuCell[9, 9];
+        private List<SudokuCell> wrongCells = new List<SudokuCell>();
         private int fullCells = 81;
         private int[] lastFocused = new int[2];
         public int time {get; private set;}
@@ -183,47 +184,162 @@ namespace sudoku
         {
             var cell = sender as SudokuCell;
 
-            // Do nothing if the cell is locked
             if (cell.IsLocked)
                 return;
 
+            string poss = Grille.GetPossibleValues(getGridAsArray(), cell.X, cell.Y);
+            bool isOldCorrect = false;
+            bool isNewCorrect = false;
+
+            foreach (char c in poss)
+                if (c - '0' == cell.Value)
+                    isOldCorrect = true;
+
             if (e.KeyCode == Keys.D0 || e.KeyCode == Keys.NumPad0 || e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
             {
-                if (cell.Value != 0)
+                if (isOldCorrect)
+                {
                     fullCells -= 1;
+                }
+                else if (cell.Value != 0)
+                {
+                    wrongCells.Remove(cell);
+                }
                 cell.Clear();
             }
 
-            // Add the pressed key value in the cell only if it is a number
             if ((e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D9) || (e.KeyCode >= Keys.NumPad1 && e.KeyCode <= Keys.NumPad9))
             {
                 int value = e.KeyCode <= Keys.D9 ? (int)(e.KeyCode - Keys.D0) : (int)(e.KeyCode - Keys.NumPad0);
 
-                // Is the value the only one possible :
-                string poss = Grille.GetPossibleValues(getGridAsArray(), cell.X, cell.Y);
-                bool isPoss = false;
                 foreach (char c in poss)
                     if (c - '0' == value)
-                        isPoss = true;
-                if (isPoss)
+                        isNewCorrect = true;
+
+                if (isNewCorrect)
                 {
-                    if (cell.ForeColor == Color.Red || cell.Value == 0)
+                    if (!isOldCorrect)
+                    {
                         fullCells += 1;
-                    cell.SetIsGood(true);
+                        if (cell.Value != 0)
+                            wrongCells.Remove(cell);
+                    }
+                    cell.ForeColor = Color.Black;
+                    cell.SetValue(value);
                 }
                 else
                 {
-                    if (cell.ForeColor == Color.Black || cell.Value == 0)
+                    if (isOldCorrect)
+                    {
                         fullCells -= 1;
-                    cell.SetIsGood(false);
+                    }
+                    else if (cell.Value != 0)
+                    {
+
+                        wrongCells.Remove(cell);
+                    }
+                    cell.ForeColor = Color.Red;
+                    cell.SetValue(value);
+                    wrongCells.Add(cell);
+                    checkConflictCell(cell);
                 }
                 cell.SetValue(value);
                 CalculateLeftNumbers();
             }
 
+            checkAllWrongCells();
+
             if (fullCells == 81)
             {
                 Victory();
+            }
+        }
+
+        private void checkAllWrongCells()
+        {
+            List<SudokuCell> correctCells = new List<SudokuCell>();
+            foreach (SudokuCell cell in wrongCells)
+            {
+                string poss = Grille.GetPossibleValues(getGridAsArray(), cell.X, cell.Y);
+                bool isPoss = false;
+                foreach (char c in poss)
+                    if (c - '0' == cell.Value)
+                        isPoss = true;
+                cell.SetIsGood(isPoss);
+                if (isPoss)
+                {
+                    fullCells += 1;
+                    correctCells.Add(cell);
+                }
+            }
+            foreach(SudokuCell cell in correctCells)
+            {
+                wrongCells.Remove(cell);
+            }
+        }
+
+        private void checkConflictCell(SudokuCell cell)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (!(cell.X == i && cell.Y == j))
+                    {
+                        if (!cells[i, j].IsLocked && cells[i, j].Value != 0) // Ne pas compter les cases locked + les non-remplis
+                        {
+                            bool alreadyIn = false; // Vérifier que la case n'est pas 2 fois dedans
+                            foreach(SudokuCell c in wrongCells)
+                                if (c.X == i && c.Y == j)
+                                    alreadyIn = true;
+                            if (!alreadyIn)
+                            {
+                                if (i == cell.X)
+                                {
+                                    string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
+                                    bool isPoss = false;
+                                    foreach (char c in poss)
+                                        if (c - '0' == cell.Value)
+                                            isPoss = true;
+                                    cells[i, j].SetIsGood(isPoss);
+                                    if (!isPoss)
+                                    {
+                                        fullCells -= 1;
+                                        wrongCells.Add(cells[i, j]);
+                                    }
+                                }
+                                else if (j == cell.Y)
+                                {
+                                    string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
+                                    bool isPoss = false;
+                                    foreach (char c in poss)
+                                        if (c - '0' == cell.Value)
+                                            isPoss = true;
+                                    cells[i, j].SetIsGood(isPoss);
+                                    if (!isPoss)
+                                    {
+                                        fullCells -= 1;
+                                        wrongCells.Add(cells[i, j]);
+                                    }
+                                }
+                                else if (i / 3 == cell.X / 3 && j / 3 == cell.Y / 3)
+                                {
+                                    string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
+                                    bool isPoss = false;
+                                    foreach (char c in poss)
+                                        if (c - '0' == cell.Value)
+                                            isPoss = true;
+                                    cells[i, j].SetIsGood(isPoss);
+                                    if (!isPoss)
+                                    {
+                                        fullCells -= 1;
+                                        wrongCells.Add(cells[i, j]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -318,6 +434,7 @@ namespace sudoku
             clbNote.Visible = false;
             fullCells = 81;
             nbHelp = 0;
+            wrongCells.Clear();
 
             difficulty = Difficulty.None;
             if (this.rbtnEasy.Checked)
@@ -370,20 +487,28 @@ namespace sudoku
         {
             if (fullCells < 80) // impossible d'avoir de l'aide pour la dernière case
             {
-                fullCells++;
-                int x;
-                int y;
-                do
+                List<SudokuCell> emptyCells = new List<SudokuCell>();
+
+                for (int x = 0; x < 9; x++)
+                    for (int y = 0; y < 9; y++)
+                        if (!cells[x, y].IsLocked && cells[x, y].Value == 0)
+                            emptyCells.Add(cells[x, y]);
+
+                if (emptyCells.Count > 0)
                 {
-                    x = Random.Shared.Next(9);
-                    y = Random.Shared.Next(9);
-                } while (cells[x, y].IsLocked || cells[x, y].Value != 0);
+                    int randInd = Random.Shared.Next(emptyCells.Count);
 
-                cells[x, y].Help();
+                    cells[emptyCells[randInd].X, emptyCells[randInd].Y].Help();
+                    fullCells++;
 
-                // Ajouter du temps si utilisation de l'aide
-                AddToTime((int)Math.Min(Math.Pow((2+(int)difficulty), nbHelp), 300 * (1f + (int)difficulty / 2f)));
-                nbHelp++;
+                    // Ajouter du temps si utilisation de l'aide
+                    AddToTime((int)Math.Min(Math.Pow((2 + (int)difficulty), nbHelp), 300 * (1f + (int)difficulty / 2f)));
+                    nbHelp++;
+                }
+                else
+                {
+                    MessageBox.Show("Il n'existe aucune case où l'aide peut être utilisée");
+                }
             }
             else
             {
@@ -404,7 +529,7 @@ namespace sudoku
             else
                 time = 0;
 
-            lbTime.Text = "Time : ";
+            lbTime.Text = "Temps : ";
             if (time / 3600 > 0)
             {
                 lbTime.Text += (time / 3600).ToString() + ":";
@@ -416,7 +541,7 @@ namespace sudoku
             if (s.Length == 1)
                 s = "0" + s;
 
-            lbTime.Text += m + ":" + s; 
+            lbTime.Text += m + ":" + s + " -> " + fullCells.ToString() + " : " + wrongCells.Count.ToString(); 
         }
 
         private string GetPossibleValues(SudokuCell[,] grid, int x, int y, string alreadyUsed = "")
