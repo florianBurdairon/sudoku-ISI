@@ -182,52 +182,22 @@ namespace sudoku
 
         private void cell_keyDown(object sender, KeyEventArgs e)
         {
-            var cell = sender as SudokuCell;
-
-            if (cell.IsLocked)
-                return;
-
-            string poss = Grille.GetPossibleValues(getGridAsArray(), cell.X, cell.Y);
-            bool isOldCorrect = false;
-            bool isNewCorrect = false;
-
-            foreach (char c in poss)
-                if (c - '0' == cell.Value)
-                    isOldCorrect = true;
-
-            if (e.KeyCode == Keys.D0 || e.KeyCode == Keys.NumPad0 || e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
+            if (gameRunning)
             {
-                if (isOldCorrect)
-                {
-                    fullCells -= 1;
-                }
-                else if (cell.Value != 0)
-                {
-                    wrongCells.Remove(cell);
-                }
-                cell.Clear();
-            }
+                var cell = sender as SudokuCell;
 
-            if ((e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D9) || (e.KeyCode >= Keys.NumPad1 && e.KeyCode <= Keys.NumPad9))
-            {
-                int value = e.KeyCode <= Keys.D9 ? (int)(e.KeyCode - Keys.D0) : (int)(e.KeyCode - Keys.NumPad0);
+                if (cell.IsLocked)
+                    return;
+
+                string poss = Grille.GetPossibleValues(getGridAsArray(), cell.X, cell.Y);
+                bool isOldCorrect = false;
+                bool isNewCorrect = false;
 
                 foreach (char c in poss)
-                    if (c - '0' == value)
-                        isNewCorrect = true;
+                    if (c - '0' == cell.Value)
+                        isOldCorrect = true;
 
-                if (isNewCorrect)
-                {
-                    if (!isOldCorrect)
-                    {
-                        fullCells += 1;
-                        if (cell.Value != 0)
-                            wrongCells.Remove(cell);
-                    }
-                    cell.ForeColor = Color.Black;
-                    cell.SetValue(value);
-                }
-                else
+                if (e.KeyCode == Keys.D0 || e.KeyCode == Keys.NumPad0 || e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
                 {
                     if (isOldCorrect)
                     {
@@ -235,23 +205,56 @@ namespace sudoku
                     }
                     else if (cell.Value != 0)
                     {
-
                         wrongCells.Remove(cell);
                     }
-                    cell.ForeColor = Color.Red;
-                    cell.SetValue(value);
-                    wrongCells.Add(cell);
-                    checkConflictCell(cell);
+                    cell.Clear();
                 }
-                cell.SetValue(value);
-                CalculateLeftNumbers();
-            }
 
-            checkAllWrongCells();
+                if ((e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D9) || (e.KeyCode >= Keys.NumPad1 && e.KeyCode <= Keys.NumPad9))
+                {
+                    int value = e.KeyCode <= Keys.D9 ? (int)(e.KeyCode - Keys.D0) : (int)(e.KeyCode - Keys.NumPad0);
 
-            if (fullCells == 81)
-            {
-                Victory();
+                    foreach (char c in poss)
+                        if (c - '0' == value)
+                            isNewCorrect = true;
+
+                    if (isNewCorrect)
+                    {
+                        if (!isOldCorrect)
+                        {
+                            fullCells += 1;
+                            if (cell.Value != 0)
+                                wrongCells.Remove(cell);
+                        }
+                        cell.ForeColor = Color.Black;
+                        cell.SetValue(value);
+                    }
+                    else
+                    {
+                        if (isOldCorrect)
+                        {
+                            fullCells -= 1;
+                        }
+                        else if (cell.Value != 0)
+                        {
+
+                            wrongCells.Remove(cell);
+                        }
+                        cell.ForeColor = Color.Red;
+                        cell.SetValue(value);
+                        wrongCells.Add(cell);
+                        checkConflictCell(cell);
+                    }
+                    cell.SetValue(value);
+                    CalculateLeftNumbers();
+                }
+
+                checkAllWrongCells();
+
+                if (fullCells == 81)
+                {
+                    Victory();
+                }
             }
         }
 
@@ -541,7 +544,7 @@ namespace sudoku
             if (s.Length == 1)
                 s = "0" + s;
 
-            lbTime.Text += m + ":" + s + " -> " + fullCells.ToString() + " : " + wrongCells.Count.ToString(); 
+            lbTime.Text += m + ":" + s;
         }
 
         private string GetPossibleValues(SudokuCell[,] grid, int x, int y, string alreadyUsed = "")
