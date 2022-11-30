@@ -56,11 +56,16 @@ namespace sudoku
                     this.btnContinue.Text = "Reprendre la partie";
                     this.btnContinue.UseVisualStyleBackColor = true;
                     this.btnContinue.Click += new System.EventHandler(this.btnContinue_Click);
+                }else
+                {
+                    existOldGame = false;
+                    this.btnStart.Location = new System.Drawing.Point(157, 183);
                 }
             }
             catch(Exception e)
             {
                 existOldGame = false;
+                this.btnStart.Location = new System.Drawing.Point(157, 183);
             }
 
             try
@@ -634,7 +639,6 @@ namespace sudoku
             catch(Exception e)
             {
                 throw e;
-                return -1;
             }
         }
 
