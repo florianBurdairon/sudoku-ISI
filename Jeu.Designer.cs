@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.CheckedListBox clbNote;
             this.panelGrille = new System.Windows.Forms.Panel();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
@@ -106,7 +107,7 @@
             this.lbTime.AutoSize = true;
             this.lbTime.Location = new System.Drawing.Point(397, 541);
             this.lbTime.Name = "lbTime";
-            this.lbTime.Size = new System.Drawing.Size(98, 20);
+            this.lbTime.Size = new System.Drawing.Size(77, 15);
             this.lbTime.TabIndex = 5;
             this.lbTime.Text = "Temps : 02:51";
             this.lbTime.Visible = false;
@@ -116,7 +117,7 @@
             this.listLeaderboard.BackColor = System.Drawing.SystemColors.Control;
             this.listLeaderboard.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listLeaderboard.FormattingEnabled = true;
-            this.listLeaderboard.ItemHeight = 20;
+            this.listLeaderboard.ItemHeight = 15;
             this.listLeaderboard.Items.AddRange(new object[] {
             "1",
             "2",
@@ -135,7 +136,7 @@
             this.rbtnEasy.AutoSize = true;
             this.rbtnEasy.Location = new System.Drawing.Point(48, 51);
             this.rbtnEasy.Name = "rbtnEasy";
-            this.rbtnEasy.Size = new System.Drawing.Size(67, 24);
+            this.rbtnEasy.Size = new System.Drawing.Size(55, 19);
             this.rbtnEasy.TabIndex = 7;
             this.rbtnEasy.Text = "Facile";
             this.rbtnEasy.UseVisualStyleBackColor = true;
@@ -146,7 +147,7 @@
             this.rbtnMedium.Checked = true;
             this.rbtnMedium.Location = new System.Drawing.Point(45, 81);
             this.rbtnMedium.Name = "rbtnMedium";
-            this.rbtnMedium.Size = new System.Drawing.Size(75, 24);
+            this.rbtnMedium.Size = new System.Drawing.Size(62, 19);
             this.rbtnMedium.TabIndex = 8;
             this.rbtnMedium.TabStop = true;
             this.rbtnMedium.Text = "Moyen";
@@ -157,7 +158,7 @@
             this.rbtnHard.AutoSize = true;
             this.rbtnHard.Location = new System.Drawing.Point(42, 111);
             this.rbtnHard.Name = "rbtnHard";
-            this.rbtnHard.Size = new System.Drawing.Size(82, 24);
+            this.rbtnHard.Size = new System.Drawing.Size(65, 19);
             this.rbtnHard.TabIndex = 9;
             this.rbtnHard.Text = "Difficile";
             this.rbtnHard.UseVisualStyleBackColor = true;
@@ -179,7 +180,7 @@
             this.lbLeftNumbers.BackColor = System.Drawing.SystemColors.Control;
             this.lbLeftNumbers.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lbLeftNumbers.FormattingEnabled = true;
-            this.lbLeftNumbers.ItemHeight = 20;
+            this.lbLeftNumbers.ItemHeight = 15;
             this.lbLeftNumbers.Items.AddRange(new object[] {
             "1 : ",
             "2 :",
@@ -262,17 +263,17 @@
             this.cbBlueLines.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbBlueLines.Location = new System.Drawing.Point(22, 303);
             this.cbBlueLines.Name = "cbBlueLines";
-            this.cbBlueLines.Size = new System.Drawing.Size(187, 24);
+            this.cbBlueLines.Size = new System.Drawing.Size(156, 19);
             this.cbBlueLines.TabIndex = 16;
             this.cbBlueLines.TabStop = false;
-            this.cbBlueLines.Text = "Retirer les lignes bleues";
+            this.cbBlueLines.Text = "Afficher les lignes bleues";
             this.cbBlueLines.UseVisualStyleBackColor = true;
             this.cbBlueLines.CheckedChanged += new System.EventHandler(this.cbBlueLines_CheckedChanged);
             // 
             // Jeu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(921, 583);
+            this.ClientSize = new System.Drawing.Size(923, 591);
             this.Controls.Add(this.cbBlueLines);
             this.Controls.Add(this.gbNotes);
             this.Controls.Add(this.gbLeaderboard);

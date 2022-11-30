@@ -177,7 +177,7 @@
             {
                 this.SetValue(this.OriginalValue);
                 this.SetTextAsNote(false);
-                this.ForeColor = Color.LimeGreen;
+                this.ForeColor = Color.ForestGreen;
                 this.IsLocked = true;
             }
         }
