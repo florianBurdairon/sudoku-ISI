@@ -447,6 +447,10 @@ namespace sudoku
             fullCells = 81;
             nbHelp = 0;
             wrongCells.Clear();
+            line1.Visible = true;
+            line2.Visible = true;
+            line3.Visible = true;
+            line4.Visible = true;
 
             difficulty = Difficulty.None;
             if (this.rbtnEasy.Checked)
@@ -700,6 +704,10 @@ namespace sudoku
             btnHelp.Visible = true;
             groupLeftNumbers.Visible = true;
             cbBlueLines.Visible = true;
+            line1.Visible = true;
+            line2.Visible = true;
+            line3.Visible = true;
+            line4.Visible = true;
 
             gameRunning = true;
 

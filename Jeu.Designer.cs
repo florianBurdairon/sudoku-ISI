@@ -45,6 +45,10 @@
             this.gbLeaderboard = new System.Windows.Forms.GroupBox();
             this.gbNotes = new System.Windows.Forms.GroupBox();
             this.cbBlueLines = new System.Windows.Forms.CheckBox();
+            this.line2 = new System.Windows.Forms.Label();
+            this.line4 = new System.Windows.Forms.Label();
+            this.line3 = new System.Windows.Forms.Label();
+            this.line1 = new System.Windows.Forms.Label();
             clbNote = new System.Windows.Forms.CheckedListBox();
             this.panelGrille.SuspendLayout();
             this.groupRBtn.SuspendLayout();
@@ -269,10 +273,64 @@
             this.cbBlueLines.UseVisualStyleBackColor = true;
             this.cbBlueLines.CheckedChanged += new System.EventHandler(this.cbBlueLines_CheckedChanged);
             // 
+            // line2
+            // 
+            this.line2.AutoSize = true;
+            this.line2.BackColor = System.Drawing.SystemColors.ControlText;
+            this.line2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.line2.Location = new System.Drawing.Point(371, 38);
+            this.line2.MinimumSize = new System.Drawing.Size(5, 450);
+            this.line2.Name = "line2";
+            this.line2.Size = new System.Drawing.Size(5, 450);
+            this.line2.TabIndex = 17;
+            this.line2.Visible = false;
+            // 
+            // line4
+            // 
+            this.line4.AutoSize = true;
+            this.line4.BackColor = System.Drawing.SystemColors.ControlText;
+            this.line4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.line4.Location = new System.Drawing.Point(223, 336);
+            this.line4.MaximumSize = new System.Drawing.Size(0, 2);
+            this.line4.MinimumSize = new System.Drawing.Size(450, 5);
+            this.line4.Name = "line4";
+            this.line4.Size = new System.Drawing.Size(450, 5);
+            this.line4.TabIndex = 18;
+            this.line4.Visible = false;
+            // 
+            // line3
+            // 
+            this.line3.AutoSize = true;
+            this.line3.BackColor = System.Drawing.SystemColors.ControlText;
+            this.line3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.line3.Location = new System.Drawing.Point(521, 38);
+            this.line3.MinimumSize = new System.Drawing.Size(5, 450);
+            this.line3.Name = "line3";
+            this.line3.Size = new System.Drawing.Size(5, 450);
+            this.line3.TabIndex = 19;
+            this.line3.Visible = false;
+            // 
+            // line1
+            // 
+            this.line1.AutoSize = true;
+            this.line1.BackColor = System.Drawing.SystemColors.ControlText;
+            this.line1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.line1.Location = new System.Drawing.Point(223, 185);
+            this.line1.MaximumSize = new System.Drawing.Size(0, 2);
+            this.line1.MinimumSize = new System.Drawing.Size(450, 5);
+            this.line1.Name = "line1";
+            this.line1.Size = new System.Drawing.Size(450, 5);
+            this.line1.TabIndex = 20;
+            this.line1.Visible = false;
+            // 
             // Jeu
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(921, 583);
+            this.Controls.Add(this.line1);
+            this.Controls.Add(this.line3);
+            this.Controls.Add(this.line4);
+            this.Controls.Add(this.line2);
             this.Controls.Add(this.cbBlueLines);
             this.Controls.Add(this.gbNotes);
             this.Controls.Add(this.gbLeaderboard);
@@ -321,5 +379,9 @@
         private GroupBox gbLeaderboard;
         private GroupBox gbNotes;
         private CheckBox cbBlueLines;
+        private Label line2;
+        private Label line4;
+        private Label line3;
+        private Label line1;
     }
 }
