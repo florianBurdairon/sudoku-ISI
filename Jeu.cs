@@ -32,21 +32,21 @@ namespace sudoku
         {
             InitializeComponent();
 
+            //Cache certains éléments du concepteur à la création de la fenêtre
             gbLeaderboard.Visible = false;
-            //listLeaderboard.Visible = false;
             groupLeftNumbers.Visible = false;
             cbBlueLines.Visible = false;
 
+            //Ajout du bouton reprendre si une partie en cours à été trouvé
             try
             {
-                int nbFullCells = getNbFullCellsOldGame();
+                int nbFullCells = getNbFullCellsOldGame();  //Lit le fichier save.json et récupère le nombre de cases remplies
 
-                if(nbFullCells < 81)
+                if(nbFullCells < 81)    //Si la grille n'est pas entièrement remplie
                 {
                     existOldGame = true;
-                    // 
-                    // btnContinue
-                    // 
+
+                    // Affiche le bouton btnContinue 
                     this.btnContinue = new Button();
                     this.panelGrille.Controls.Add(this.btnContinue);
                     this.btnContinue.Location = new System.Drawing.Point(264, 183);
@@ -59,15 +59,16 @@ namespace sudoku
                 }else
                 {
                     existOldGame = false;
-                    this.btnStart.Location = new System.Drawing.Point(157, 183);
+                    this.btnStart.Location = new System.Drawing.Point(157, 183);    //Déplace le bouton btnStart pour le centrer s'il n'y a pas de partie en cours
                 }
             }
-            catch(Exception e)
+            catch(Exception e)  //Exception possible si le fichier save.json n'existe pas
             {
                 existOldGame = false;
-                this.btnStart.Location = new System.Drawing.Point(157, 183);
+                this.btnStart.Location = new System.Drawing.Point(157, 183);    //Déplace le bouton btnStart pour le centrer s'il n'y a pas de partie en cours
             }
 
+            //Désérialise le fichier leaderboard.json pour récupérer les tableaux de scores
             try
             {
                 string jsonString = File.ReadAllText(@"..\..\..\Data\leaderboard.json");
@@ -77,13 +78,17 @@ namespace sudoku
                 else
                     leaderboard = new Leaderboard();
             }
-            catch(Exception e)
+            catch(Exception e)  //Exception possible si le fichier leaderboard.json n'existe pas
             {
                 leaderboard = new Leaderboard();
             }
             LoadLeaderboard();
         }
 
+        /*
+         * Surcharge le comportement pas défaut des flêches de direction
+         * Permet de naviguer dans la grille du sudoku
+         */
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             int[] newCoords = new int[] {0, 0};
@@ -135,30 +140,35 @@ namespace sudoku
             return true;
         }
 
+        /*
+         * Créer toutes les cases du sudoku
+         */
         private void createCells()
         {
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    // Create 81 cells for with styles and locations based on the index
+                    // Crée 81 SudokuCell avec un style et une position basé sur les indices i et j
                     cells[i, j] = new SudokuCell();
                     cells[i, j].Location = new Point(i * cells[i, j].Size.Width, j * cells[i, j].Size.Height);
                     cells[i, j].BackColor = ((i / 3) + (j / 3)) % 2 == 0 ? SystemColors.Control : Color.FromArgb(220, 220, 220);
                     cells[i, j].X = i;
                     cells[i, j].Y = j;
 
-                    // Assign key press event for each cells
+                    // Assigne les événements de chaque SudokuCell
                     cells[i, j].KeyDown += cell_keyDown;
                     cells[i, j].Enter += cell_enterFocus;
 
-
+                    // Ajoute les SudokuCell dans le Panel
                     panelGrille.Controls.Add(cells[i, j]);
                 }
             }
         }
 
-
+        /*
+         * Rempli la grille complète avec les chiffres de la grille finale
+         */
         public void fillGrid(Grille grid)
         {
             for (int i = 0; i < 9; i++)
@@ -171,6 +181,9 @@ namespace sudoku
             }
         }
 
+        /*
+         * Vide les cases du sudoku 
+         */
         public void removeCell(int[,] grid)
         {
             for (int i = 0; i < 9; i++)
@@ -191,6 +204,9 @@ namespace sudoku
             }
         }
 
+        /*
+         * Gère le clique sur une touche du clavier lorsqu'une cellule de la grille possède le focus
+         */
         private void cell_keyDown(object sender, KeyEventArgs e)
         {
             if (!gameRunning)
@@ -212,6 +228,7 @@ namespace sudoku
                 if (c - '0' == cell.Value)
                     isOldCorrect = true;
 
+            //Gère le cas où on souhaite supprimer la valeur précédemment saisi (touches : 0, SUPPR et retour en arrière)
             if (e.KeyCode == Keys.D0 || e.KeyCode == Keys.NumPad0 || e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
             {
                 if (cell.Value == 0) // Si la case est vide
@@ -236,6 +253,7 @@ namespace sudoku
                 cell.Clear();
             }
 
+            //Gère le cas où un chiffre a été saisi
             if ((e.KeyCode >= Keys.D1 && e.KeyCode <= Keys.D9) || (e.KeyCode >= Keys.NumPad1 && e.KeyCode <= Keys.NumPad9))
             {
                 int value = e.KeyCode <= Keys.D9 ? (int)(e.KeyCode - Keys.D0) : (int)(e.KeyCode - Keys.NumPad0);
@@ -274,19 +292,22 @@ namespace sudoku
                     cell.SetValue(value);
                 }
 
-                CalculateLeftNumbers();
-                checkAllWrongCells();
+                CalculateLeftNumbers(); //Affiche le nombre restant de chacun des chiffres
+                checkAllWrongCells();   //Vérifie si les cases précédemment fausses le sont toujours
 
-            if (fullCells == 81)
+            if (fullCells == 81)    //Condition de victoire
             {
                 Victory();
             }
         }
 
+        /*
+         * Vérifie si les cases précédemment fausses le sont toujours
+         */
         private void checkAllWrongCells()
         {
             List<SudokuCell> correctCells = new List<SudokuCell>();
-            foreach (SudokuCell cell in wrongCells)
+            foreach (SudokuCell cell in wrongCells) //Vérifie toutes les cases fausses
             {
                 string poss = Grille.GetPossibleValues(getGridAsArray(), cell.X, cell.Y);
                 bool isPoss = false;
@@ -300,12 +321,15 @@ namespace sudoku
                     correctCells.Add(cell);
                 }
             }
-            foreach(SudokuCell cell in correctCells)
+            foreach(SudokuCell cell in correctCells)    //Retire les cases qui sont devenues correctes de la listes des cases fausses
             {
                 wrongCells.Remove(cell);
             }
         }
 
+        /*
+         * Ajoute toutes les cases qui sont en conflits avec la cellule passée en paramètre dans la liste des cases fausses
+         */
         private void checkConflictCell(SudokuCell cell)
         {
             for (int i = 0; i < 9; i++)
@@ -322,7 +346,7 @@ namespace sudoku
                                     alreadyIn = true;
                             if (!alreadyIn)
                             {
-                                if (i == cell.X)
+                                if (i == cell.X)    //Même ligne
                                 {
                                     string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
                                     bool isPoss = false;
@@ -336,7 +360,7 @@ namespace sudoku
                                         wrongCells.Add(cells[i, j]);
                                     }
                                 }
-                                else if (j == cell.Y)
+                                else if (j == cell.Y)   //Même colonne
                                 {
                                     string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
                                     bool isPoss = false;
@@ -350,7 +374,7 @@ namespace sudoku
                                         wrongCells.Add(cells[i, j]);
                                     }
                                 }
-                                else if (i / 3 == cell.X / 3 && j / 3 == cell.Y / 3)
+                                else if (i / 3 == cell.X / 3 && j / 3 == cell.Y / 3)    //Même carré
                                 {
                                     string poss = Grille.GetPossibleValues(getGridAsArray(), i, j);
                                     bool isPoss = false;
@@ -371,6 +395,9 @@ namespace sudoku
             }
         }
 
+        /*
+         * Gère le fait qu'une cellule reçoive le focus
+         */
         private void cell_enterFocus(object? sender, EventArgs e)
         {
             var cell = sender as SudokuCell;
@@ -390,10 +417,13 @@ namespace sudoku
                     }
                 }
 
-                DrawBlueLines();
+                DrawBlueLines();    //Change la couleur des cases affectées par la case possèdant le focus
             }
         }
 
+        /*
+         * Permeet de créer un tableau d'entier à 2 dimensions contenant les valeurs de toutes les cases de la grille
+         */
         private int[,] getGridAsArray()
         {
             int[,] ret = new int[9, 9];
@@ -409,13 +439,19 @@ namespace sudoku
             return ret;
         }
 
+        /*
+         * Gère la fin de partie
+         */
         private void Victory()
         {
-            timer.Stop();
-            ChoiceUsername cu = new ChoiceUsername(this);
-            cu.Show();
+            timer.Stop();   //Arrête le chronomètre
+            ChoiceUsername cu = new ChoiceUsername(this);   //Crée et affiche une nouvelle fenêtre permettant d'enregistrer le score
+            cu.Show();                                      //
         }
 
+        /*
+         * Permet d'enregistrer le score et de sérialiser la listes des scores dans le fichier leaderboard.json
+         */
         public void SaveScore(string username = "Guest")
         {
             leaderboard.AddScore(username, time, nbHelp, difficulty);
@@ -425,12 +461,18 @@ namespace sudoku
             LoadLeaderboard();
         }
 
+        /*
+         * Ajoute des annotations sur la cellules possèdant le focus
+         */
         private void clbNotes_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             cells[lastFocused[0], lastFocused[1]].SetNoteAt(e.Index, e.CurrentValue == CheckState.Unchecked);
             cells[lastFocused[0], lastFocused[1]].Focus();
         }
 
+        /*
+         * Affiche le tableau des scores en fonction de la difficulté
+         */
         private void DisplayLeaderboard()
         {
 
@@ -440,6 +482,9 @@ namespace sudoku
             listLeaderboard.Visible = true;
         }
 
+        /*
+         * Permet de démarrer la partie
+         */
         private void InitializeStart()
         {
             panelGrille.Controls.Clear();
@@ -477,6 +522,9 @@ namespace sudoku
             timer.Start();
         }
 
+        /*
+         * Gère le clique sur le bouton btnStart
+         */
         private void btnStart_Click(object sender, EventArgs e)
         {
             InitializeStart();
@@ -493,6 +541,9 @@ namespace sudoku
             gameRunning = true;
         }
 
+        /*
+         * Gère le clique sur le bouton btnRestart
+         */
         private void btnRestart_Click(object sender, EventArgs e)
         {
             InitializeStart();
@@ -500,6 +551,9 @@ namespace sudoku
             gameRunning = true;
         }
 
+        /*
+         * Gère le clique sur le bouton btnHelp
+         */
         private void btnHelp_Click(object sender, EventArgs e)
         {
             if (fullCells < 80) // impossible d'avoir de l'aide pour la dernière case
@@ -513,9 +567,9 @@ namespace sudoku
 
                 if (emptyCells.Count > 0)
                 {
-                    int randInd = Random.Shared.Next(emptyCells.Count);
+                    int randInd = Random.Shared.Next(emptyCells.Count); //Sélectionne aléatoirement une case vide
 
-                    cells[emptyCells[randInd].X, emptyCells[randInd].Y].Help();
+                    cells[emptyCells[randInd].X, emptyCells[randInd].Y].Help(); //Rempli la case précédemment sélectionnée avec la bonne valeur
                     fullCells++;
 
                     // Ajouter du temps si utilisation de l'aide
@@ -534,11 +588,17 @@ namespace sudoku
             btnHelp.Text = "Aide (+" + (int)Math.Min(Math.Pow((2 + (int)difficulty), nbHelp), 300 * (1f + (int)difficulty / 2f)) + "s)";
         }
 
+        /*
+         * Incrément un compteur à la fin de chaque intervalle de 1 seconde du Timer
+         */
         private void timer_Tick(object sender, EventArgs e)
         {
             AddToTime(1);
         }
 
+        /*
+         * Ajoute du temps au compteur et met à jour l'affichage
+         */
         private void AddToTime(int val)
         {
             if (val != 0)
@@ -561,6 +621,9 @@ namespace sudoku
             lbTime.Text += m + ":" + s;
         }
 
+        /*
+         * Récupère une chaîne de caractères contenant tous les chiffres possibles pour la case passée en paramètre
+         */
         private string GetPossibleValues(SudokuCell[,] grid, int x, int y, string alreadyUsed = "")
         {
             int[,] ints = new int[9, 9];
@@ -571,6 +634,9 @@ namespace sudoku
             return Grille.GetPossibleValues(ints, x, y, alreadyUsed);
         }
 
+        /*
+         * Affiche le nombre de chiffre restant pour chacun des chiffres
+         */
         private void CalculateLeftNumbers()
         {
             leftNumbers = new int[] { 9, 9, 9, 9, 9, 9, 9, 9, 9};
@@ -598,19 +664,25 @@ namespace sudoku
             }
         }
 
+        /*
+         * Permet d'afficher les scores de la difficulté sélectionnée
+         */
         private void LoadLeaderboard()
         {
-            listLeaderboard.Items.Clear();
+            listLeaderboard.Items.Clear();  //Vide la ListBox
             if (difficulty != Difficulty.None)
             {
                 List<Score> lb = leaderboard.GetLeaderboardWith(difficulty);
-                for (int i = 0; i < lb.Count; i++)
+                for (int i = 0; i < lb.Count; i++)  //Ajoute les scores correspondant à la bonne difficulté
                 {
                     listLeaderboard.Items.Add(lb[i].ToString());
                 }
             }
         }
 
+        /*
+         * Permet de sauvegarder la partie en cours en sérialisant les données dans le fichier save.json
+         */
         private void serializeGame()
         {
             SaveGame save = new SaveGame(cells, fullCells, time, nbHelp, difficulty);
@@ -620,6 +692,9 @@ namespace sudoku
 
         }
 
+        /*
+         * Permet de charger une partie existante en désérialisant le fichier save.json
+         */
         private void deserializeGame()
         {
             string jsonString = File.ReadAllText(@"..\..\..\Data\save.json");
@@ -632,6 +707,9 @@ namespace sudoku
             this.difficulty = save.difficulty;
         }
 
+        /*
+         * Permet de récupérer le nombre de case remplie dans la grille d'une ancienne partie stockée dans le fichier save.jsom
+         */
         private int getNbFullCellsOldGame() 
         {
             try
@@ -646,6 +724,9 @@ namespace sudoku
             }
         }
 
+        /*
+         * Permet de générer la grille à partir de la sauvegarde d'une ancienne partie
+         */
         private SudokuCell[,] loadCells(SaveGame save)
         {
             SudokuCell[,] grid = new SudokuCell[9, 9];
@@ -689,12 +770,18 @@ namespace sudoku
             return grid;
         }
 
+        /*
+         * Permet de sérialiser la partie en cours à la fermeture de la fenêtre
+         */
         private void Jeu_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (gameRunning)
                 serializeGame();
         }
 
+        /*
+         * Gère le clique sur le bouton btnContinue
+         */
         private void btnContinue_Click(object sender, EventArgs e)
         {
             btnStart.Visible = false;
@@ -733,6 +820,9 @@ namespace sudoku
             timer.Start();
         }
 
+        /*
+         * Permet de changer la couleur des cases affectées par la case possédant le focus
+         */
         private void DrawBlueLines()
         {
             if (showBlueLines)
@@ -767,6 +857,9 @@ namespace sudoku
             }
         }
 
+        /*
+         * Gère le clique sur la checkbox cbBlueLines
+         */
         private void cbBlueLines_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox? cb = sender as CheckBox;
