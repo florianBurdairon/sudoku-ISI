@@ -10,12 +10,18 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace sudoku
 {
+    /*
+     * Classe permettant de générer les grilles de sudoku
+     */
     public partial class Grille
     {
         // Grille complète
         public int[,] grille { get; }
         private Difficulty difficulty = Difficulty.None;
 
+        /*
+         * Générer une grille complète
+         */
         public Grille()
         {
             grille = new int[9, 9];
@@ -23,18 +29,21 @@ namespace sudoku
             //grille = removeCells();
         }
 
-        public Grille(Difficulty diff)
-        {
-            grille = new int[9, 9];
-            this.difficulty = diff;
-            GenerateGrid();
-        }
-
+        /*
+         * Retourne une liste de caractère correspondant à la liste des nombres possibles sur la case à l'indice *nb*
+         * Cette fonction utilise une grille à deux dimensions avec x = nb%9 et y = nb/9
+         * *alreadyUsed* permet de retirer certains nombres de la liste finale
+         */
         static public string GetPossibleValues(int[,] grid, int nb, string alreadyUsed = "")
         {
             return GetPossibleValues(grid, nb % 9, nb / 9, alreadyUsed);
         }
 
+        /*
+         * Retourne une liste de caractère correspondant à la liste des nombres possibles sur la case à la position ox, oy
+         * Cette fonction utilise une grille à deux dimensions
+         * *alreadyUsed* permet de retirer certains nombres de la liste finale
+         */
         static public string GetPossibleValues(int[,] grid, int ox, int oy, string alreadyUsed = "")
         {
             string val = "123456789";
@@ -70,6 +79,9 @@ namespace sudoku
             return val;
         }
 
+        /*
+         * Algorithme de génération de la grille complète
+         */
         public void GenerateGrid()
         {
             // On stocke chaque étape qu'on va faire sour cette forme :
@@ -150,12 +162,17 @@ namespace sudoku
             }
         }
 
-        // Retourne la valeur à la position (x, y)
+        /* 
+         * Retourne la valeur de la case à la position (x, y)
+         */
         public int GetPos(int x, int y)
         {
             return grille[x, y];
         }
 
+        /*
+         * Permet d'écrire la grilel comme une liste de caratères
+         */
         public override string ToString()
         {
             string ret = "Grille = \n ";
@@ -210,6 +227,9 @@ namespace sudoku
             return grid;
         }
 
+        /*
+         * Permet de vérifier si la grille passée en paramètre n'a qu'une seule solution
+         */
         private bool IsUnique(int[,] grid)
         {
             int nbSolution = 0;
@@ -321,22 +341,26 @@ namespace sudoku
             return true;
         }
 
+        /*
+         * Vide la grille de valeurs inutiles afin de conserver l'unicité de la solution
+         * Le temps d'éxécution dépend fortement de la difficulté souhaitée
+         */
         public int[,] RemoveCellsHard(Difficulty diff)
         {
             this.difficulty = diff;
 
+            // Nouvelle grille à vider
             int[,] grid = new int[9, 9];
-
             for (int x = 0; x < 9; x++)
                 for (int y = 0; y < 9; y++)
                     grid[x, y] = grille[x, y];
 
-            grid[0, 0] = 0;
-
+            // Toutes les cases pas encore traitées
             List<int> leftCells = new List<int>();
             for (int i = 0; i < 81; i++)
                 leftCells.Add(i);
 
+            // Définition de la difficulté
             int limit = 50;
             if (difficulty == Difficulty.Moyen)
                 limit = 40;
@@ -349,15 +373,16 @@ namespace sudoku
                 int randVal = leftCells[randInd];
 
                 int[,] gridTest = new int[9, 9];
-
                 for (int x = 0; x < 9; x++)
                     for (int y = 0; y < 9; y++)
                         gridTest[x, y] = grid[x, y];
 
                 gridTest[randVal % 9, randVal / 9] = 0;
 
+                // test de l'unicité de la solution
                 bool isUnique = IsUnique(gridTest);
 
+                // Si la solution est toujours unique => On peut enlever la valeur dans la case
                 if (isUnique)
                 {
                     grid[randVal % 9, randVal / 9] = 0;

@@ -11,6 +11,9 @@ namespace sudoku
         None
     }
 
+    /*
+     * Fenêtre de gestion du jeu complet
+     */
     public partial class Jeu : Form
     {
         private SudokuCell[,] cells = new SudokuCell[9, 9];
@@ -86,7 +89,7 @@ namespace sudoku
         }
 
         /*
-         * Surcharge le comportement pas défaut des flêches de direction
+         * Surcharge le comportement par défaut des flèches de direction
          * Permet de naviguer dans la grille du sudoku
          */
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

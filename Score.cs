@@ -8,6 +8,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace sudoku
 {
+    /*
+     * Classe permettant d'enregistrer chaque score
+     */
     [Serializable]
     internal class Score : IComparable<Score>
     {
@@ -33,6 +36,9 @@ namespace sudoku
             this.difficulty = difficulty;
         }
         
+        /*
+         * Permet de récupérer l'écriture du score pour l'afficher dans le tableau des scores
+         */
         public override string ToString()
         {
             string timeString = "";
@@ -54,6 +60,9 @@ namespace sudoku
             return data;
         }
 
+        /*
+         * Permet de comparer les scores entres eux
+         */
         public int CompareTo(Score? other)
         {
             if (other is Score o)

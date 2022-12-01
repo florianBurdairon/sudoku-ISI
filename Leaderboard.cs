@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace sudoku
 {
+    /*
+     * Classe de gestion du tableau des scores
+     */
     [Serializable]
     internal class Leaderboard
     {
