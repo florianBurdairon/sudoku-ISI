@@ -7,9 +7,15 @@ using System.Threading.Tasks;
 
 namespace sudoku
 {
+    /*
+     * Classe intermédiaire permettant la sérialisation des informations de la classe Jeu
+     */
     [Serializable]
     internal class SaveGame
     {
+        /*
+         * Classe interne de SaveGame permettant de sérialiser les informations de la classe SudokuCell
+         */
         [Serializable]
         internal class Cell
         {
@@ -39,6 +45,9 @@ namespace sudoku
         public Cell[] grid { get; set; } = new Cell[81];
         public Difficulty difficulty { get; set;}
 
+        /*
+         * Constructeur utilisé lors de la désérialisation du fichier json
+         */
         [JsonConstructor]
         public SaveGame(int fullCells, int time, int nbHelp, Cell[] grid, Difficulty difficulty)
         {
@@ -50,6 +59,9 @@ namespace sudoku
             this.difficulty = difficulty;
         }
 
+        /*
+         * Constructeur utilisé pour créer SaveGame avant la sérialisation
+         */
         public SaveGame(SudokuCell[,] cells, int fullCells, int time, int nbHelp, Difficulty difficulty)
         {
             

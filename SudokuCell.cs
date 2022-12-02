@@ -1,5 +1,8 @@
 ﻿namespace sudoku
 {
+    /*
+     * Classe héritant de Button permettant de gérer les cases du sudoku
+     */
     class SudokuCell : Button
     {
         public int Value { get; private set; }

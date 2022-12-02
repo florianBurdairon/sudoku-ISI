@@ -20,6 +20,9 @@ namespace sudoku
             scores = new List<Score>();
         }
 
+        /*
+         * Constructeur utilisé lors de la désérialisation
+         */
         [JsonConstructor]
         public Leaderboard(List<Score> scores)
         {
@@ -51,6 +54,9 @@ namespace sudoku
             return scores;
         }
 
+        /*
+         * Permet de récupérer une liste de score dépendant de la difficulté
+         */
         public List<Score> GetLeaderboardWith(Difficulty difficulty)
         {
             List<Score> ret = new List<Score>();

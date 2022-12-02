@@ -11,6 +11,9 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace sudoku
 {
+    /*
+     * Fenêtre permettant d'afficher le score et de demander à l'utilisateur de saisir son nom pour l'enregistrer dans le tableau de scores
+     */
     public partial class ChoiceUsername : Form
     {
         Jeu jeu;
@@ -36,12 +39,18 @@ namespace sudoku
             lbTime.Text += m + ":" + s;
         }
 
+        /*
+         * Gère le clique sur le bouton btnSave
+         */
         private void btnSave_Click(object sender, EventArgs e)
         {
             jeu.SaveScore(tbUsername.Text != "" ? tbUsername.Text : "Invité");
             this.Close();
         }
 
+        /*
+         * Gère le clique sur le bouton btnNotSave
+         */
         private void btnNotSave_Click(object sender, EventArgs e)
         {
             this.Close();
